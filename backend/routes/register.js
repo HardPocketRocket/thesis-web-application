@@ -11,12 +11,9 @@ router.route("/").post((req, res) => {
 
     newUser
         .save()
-        .then(() => {
-            if (isTutor === true) {
-                res.json("User added as Tutor");
-            } else {
-                res.json("User added as Student");
-            }
+        .then(user => {
+            console.log(user);
+            res.json(user._id);
         })
         .catch(err => res.status(400).json("Error: " + err));
 });
