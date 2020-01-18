@@ -8,7 +8,7 @@ export default class RegisterComponent extends Component {
         this.state = {
             username: "",
             password: "",
-            isTutor: false,
+            isTutor: "false",
             subjects: []
         };
 
