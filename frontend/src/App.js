@@ -13,7 +13,7 @@ class App extends Component {
                 <Route path="/login" exact component={LoginComponent} />
                 <Route path="/register" exact component={RegisterComponent} />
                 <Route path="/home/:id" exact component={HomeComponent} />
-                <Route path="/search" exact component={SearchComponent}/>
+                <Route path="/search/:query" exact component={SearchComponent}/>
 
                 <div className="container">
                     <h2>Components</h2>
@@ -23,9 +23,6 @@ class App extends Component {
                         </li>
                         <li>
                             <Link to="/login">Login</Link>
-                        </li>
-                        <li>
-                            <Link to="/search">Search</Link>
                         </li>
                     </ul>
                 </div>

@@ -1,36 +1,56 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-export default class HomeComponent extends Component {
+export default class SearchComponent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            searchTerm: "",
+            query: props.match.params.query,
             searchResults: []
         };
 
         this.onSubmit = this.onSubmit.bind(this);
-        this.onChangeSearchTerm = this.onChangeSearchTerm.bind(this);
+        this.onChangeQuery = this.onChangeQuery.bind(this);
+
+        axios
+            .get("http://localhost:5000/search/" + this.state.query)
+            .then(res => {
+                this.setState({
+                    searchResults: res.data
+                });
+            });
     }
 
-    onChangeSearchTerm(event) {
+    onChangeQuery(event) {
         this.setState({
-            searchTerm: event.target.value
+            query: event.target.value
         });
     }
 
     onSubmit(event) {
         event.preventDefault();
+        this.props.history.push("/search/" + this.state.query);
+    }
 
-        axios
-            .get("http://localhost:5000/search/" + this.state.searchTerm)
-            .then(res => {
-                this.setState({
-                    searchResults: res.data
-                });
-                console.log(this.state);
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.query !== prevProps.match.params.query) {
+            this.setState({
+                query: ""
             });
+
+            axios
+                .get(
+                    "http://localhost:5000/search/" +
+                        this.props.match.params.query
+                )
+                .then(res => {
+                    this.setState({
+                        searchResults: res.data
+                    });
+                    console.log("dsfdfasafdfdfsa");
+                });
+        }
     }
 
     render() {
@@ -51,13 +71,13 @@ export default class HomeComponent extends Component {
                 <form onSubmit={this.onSubmit}>
                     <input
                         type="text"
-                        value={this.state.searchTerm}
-                        onChange={this.onChangeSearchTerm}
+                        value={this.state.query}
+                        onChange={this.onChangeQuery}
                     />
                     <input type="submit" value="Search" />
                 </form>
                 <br />
-                <Results results={this.state.searchResults}/>
+                <Results results={this.state.searchResults} />
             </div>
         );
     }
