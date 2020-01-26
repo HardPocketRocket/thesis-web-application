@@ -10,7 +10,7 @@ const port = process.env.port || 5000;
 const http = require("http").createServer(app);
 const socket = require("socket.io")(http);
 
-const loggedInUsers = [];
+const connectedUsers = {};
 
 app.use(cors());
 app.use(express.json());
@@ -46,9 +46,21 @@ socket.on("connection", (socket) => {
 
     socket.on("login", username => {
         console.log("A user has logged in: " + username);
-        loggedInUsers.push(username);
-        console.log(loggedInUsers);
+        connectedUsers[username] = socket;
     });
+
+    socket.on("private", data => {
+        const receiver = data.receiver;
+        const message = data.message;
+        
+        console.log(connectedUsers[receiver]);
+        
+        if(connectedUsers.hasOwnProperty(receiver)){
+            connectedUsers[receiver].emit("private", {
+                message : message
+            })
+        }
+    })
 });
 
 http.listen(port, () => {

@@ -4,9 +4,6 @@ import axios from "axios";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
-const socket = require("socket.io-client");
-let socketClient;
-
 export default class HomeComponent extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +18,7 @@ export default class HomeComponent extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeQuery = this.onChangeQuery.bind(this);
+        this.onMessageClicked = this.onMessageClicked.bind(this);
 
         axios
             .get("http://localhost:5000/home/" + props.match.params.id)
@@ -31,10 +29,11 @@ export default class HomeComponent extends Component {
                     isTutor: res.data.isTutor,
                     subjects: res.data.subjects
                 });
-
-                socketClient = socket.connect("http://localhost:5000");
-                socketClient.emit("login", this.state.username);
             });
+    }
+
+    onMessageClicked() {
+        this.props.history.push("/message/");
     }
 
     onChangeQuery(event) {
@@ -60,6 +59,7 @@ export default class HomeComponent extends Component {
                     />
                     <input type="submit" value="Search" />
                 </form>
+                <button onClick={this.onMessageClicked}>Message</button>
                 <Card>
                     <CardContent>
                         {this.state.username}

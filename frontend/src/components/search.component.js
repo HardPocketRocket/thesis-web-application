@@ -48,7 +48,6 @@ export default class SearchComponent extends Component {
                     this.setState({
                         searchResults: res.data
                     });
-                    console.log("dsfdfasafdfdfsa");
                 });
         }
     }

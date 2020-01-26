@@ -5,6 +5,7 @@ import HomeComponent from "./components/home.component";
 import LoginComponent from "./components/login.component";
 import RegisterComponent from "./components/register.component";
 import SearchComponent from "./components/search.component";
+import MessageComponent from "./components/message.component";
 
 class App extends Component {
     render() {
@@ -13,6 +14,7 @@ class App extends Component {
                 <Route path="/login" exact component={LoginComponent} />
                 <Route path="/register" exact component={RegisterComponent} />
                 <Route path="/home/:id" exact component={HomeComponent} />
+                <Route path="/message" exact component={MessageComponent} />
                 <Route
                     path="/search/:query"
                     exact
