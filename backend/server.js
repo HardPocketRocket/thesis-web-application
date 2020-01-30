@@ -37,9 +37,7 @@ app.use("/login", loginRouter);
 app.use("/home", homeRouter);
 app.use("/search", searchRouter);
 
-socket.on("connection", (socket) => {
-    console.log("A user has connected");
-
+socket.on("connection", socket => {
     socket.on("disconnect", () => {
         console.log("A user has disconnected");
     });
@@ -47,20 +45,21 @@ socket.on("connection", (socket) => {
     socket.on("login", username => {
         console.log("A user has logged in: " + username);
         connectedUsers[username] = socket;
+
+        //for testing, counts the users because they are stored as object attributes
+        console.log(Object.keys(connectedUsers).length);
     });
 
     socket.on("private", data => {
         const receiver = data.receiver;
         const message = data.message;
-        
-        console.log(connectedUsers[receiver]);
-        
-        if(connectedUsers.hasOwnProperty(receiver)){
+
+        if (connectedUsers.hasOwnProperty(receiver)) {
             connectedUsers[receiver].emit("private", {
-                message : message
-            })
+                message: message
+            });
         }
-    })
+    });
 });
 
 http.listen(port, () => {
