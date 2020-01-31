@@ -12,6 +12,7 @@ export default class SearchComponent extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeQuery = this.onChangeQuery.bind(this);
+        this.onUserClicked = this.onUserClicked.bind(this);
 
         axios
             .get("http://localhost:5000/search/" + this.state.query)
@@ -26,6 +27,28 @@ export default class SearchComponent extends Component {
         this.setState({
             query: event.target.value
         });
+    }
+
+    onUserClicked(userId) {
+        console.log(userId);
+        
+        axios
+            .get(
+                "http://localhost:5000/mailbox/" +
+                    userId +
+                    "/" +
+                    sessionStorage.getItem("id")
+            )
+            .then(res => {
+                if (res.data === null) {
+                    axios.post("http://localhost:5000/mailbox/", {
+                        belongsTo: sessionStorage.getItem("id"),
+                        messagesFrom: userId
+                    });
+                }
+            });
+
+        this.props.history.push("/message/" + userId);
     }
 
     onSubmit(event) {
@@ -59,7 +82,9 @@ export default class SearchComponent extends Component {
             }
 
             const options = props.results.map(result => (
-                <li>{result.username}</li>
+                <li key={result._id} onClick={() => this.onUserClicked(result._id)}>
+                    {result.username}
+                </li>
             ));
 
             return <ul>{options}</ul>;

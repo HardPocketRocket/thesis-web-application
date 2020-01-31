@@ -31,11 +31,15 @@ const registerRouter = require("./routes/register");
 const loginRouter = require("./routes/login");
 const homeRouter = require("./routes/home");
 const searchRouter = require("./routes/search");
+const mailboxRouter = require("./routes/mailbox");
+const messageRouter = require("./routes/message")
 
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/home", homeRouter);
 app.use("/search", searchRouter);
+app.use("/mailbox", mailboxRouter);
+app.use("/message", messageRouter);
 
 socket.on("connection", socket => {
     socket.on("disconnect", () => {

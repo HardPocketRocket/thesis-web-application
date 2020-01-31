@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 const socket = require("socket.io-client");
 let socketClient;
@@ -9,10 +10,11 @@ export default class MessageComponent extends Component {
 
         this.state = {
             id: sessionStorage.getItem("id"),
+            mailboxId: props.match.params.id,
             receiver: "",
             sender: sessionStorage.getItem("id"),
             message: "",
-            receivedMessage: ""
+            messageList: []
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -24,9 +26,18 @@ export default class MessageComponent extends Component {
 
         socketClient.on("private", data => {
             console.log(data);
-            
-            //alert(data.message);
+            this.setState(prevState => ({
+                messageList: [...prevState.messageList, data]
+            }));
         });
+
+        axios
+            .get("http://localhost:5000/message/" + this.state.mailboxId)
+            .then(res => {
+                this.setState({
+                    messageList: res.data
+                });
+            });
     }
 
     onChangeReceiver(event) {
@@ -41,7 +52,6 @@ export default class MessageComponent extends Component {
         });
     }
 
-    
     onSubmit(event) {
         event.preventDefault();
 
@@ -49,6 +59,19 @@ export default class MessageComponent extends Component {
             receiver: this.state.receiver,
             message: this.state.message
         });
+
+        const message = {
+            mailboxId: this.state.mailboxId,
+            to: this.state.receiver,
+            from: sessionStorage.getItem("id"),
+            message: this.state.message
+        }
+
+        axios
+            .post("http://localhost:5000/message/", message)
+            .then(res => {
+                axios.patch("http://localhost:5000/mailbox/" + this.state.mailboxId, res.data)
+            });
     }
 
     render() {

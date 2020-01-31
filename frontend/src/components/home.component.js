@@ -18,7 +18,7 @@ export default class HomeComponent extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeQuery = this.onChangeQuery.bind(this);
-        this.onMessageClicked = this.onMessageClicked.bind(this);
+        this.onMailboxClicked = this.onMailboxClicked.bind(this);
 
         axios
             .get("http://localhost:5000/home/" + props.match.params.id)
@@ -32,8 +32,8 @@ export default class HomeComponent extends Component {
             });
     }
 
-    onMessageClicked() {
-        this.props.history.push("/message/");
+    onMailboxClicked() {
+        this.props.history.push("/mailbox/");
     }
 
     onChangeQuery(event) {
@@ -59,7 +59,7 @@ export default class HomeComponent extends Component {
                     />
                     <input type="submit" value="Search" />
                 </form>
-                <button onClick={this.onMessageClicked}>Message</button>
+                <button onClick={this.onMailBoxClicked}>Mailbox</button>
                 <Card>
                     <CardContent>
                         {this.state.username}
