@@ -30,25 +30,30 @@ export default class SearchComponent extends Component {
     }
 
     onUserClicked(userId) {
-        console.log(userId);
-        
+        let mailboxId;
+
         axios
             .get(
                 "http://localhost:5000/mailbox/" +
-                    userId +
+                    sessionStorage.getItem("id") +
                     "/" +
-                    sessionStorage.getItem("id")
+                    userId
             )
             .then(res => {
+                console.log(res.data);
+                
                 if (res.data === null) {
-                    axios.post("http://localhost:5000/mailbox/", {
-                        belongsTo: sessionStorage.getItem("id"),
-                        messagesFrom: userId
-                    });
+                    axios
+                        .post("http://localhost:5000/mailbox/", {
+                            belongsTo: sessionStorage.getItem("id"),
+                            messagesFrom: userId
+                        })
+                        .then(res => (mailboxId = res.data));
+                } else {
+                    mailboxId = res.data;
                 }
+                this.props.history.push("/message/" + mailboxId);
             });
-
-        this.props.history.push("/message/" + userId);
     }
 
     onSubmit(event) {
@@ -82,7 +87,10 @@ export default class SearchComponent extends Component {
             }
 
             const options = props.results.map(result => (
-                <li key={result._id} onClick={() => this.onUserClicked(result._id)}>
+                <li
+                    key={result._id}
+                    onClick={() => this.onUserClicked(result._id)}
+                >
                     {result.username}
                 </li>
             ));

@@ -15,8 +15,7 @@ router.route("/:idTo/:idFrom").get((req, res) => {
         messagesFrom: req.params.idFrom
     })
         .then(mailbox => {
-            console.log("found");
-            res.json(mailbox);
+            res.json(mailbox._id);
         })
         .catch(err => res.status(400).json("Error: " + err));
 });
@@ -30,17 +29,20 @@ router.route("/").post((req, res) => {
     newMailbox
         .save()
         .then(mailbox => {
-            console.log("created")
+            console.log("created");
             res.json(mailbox._id);
         })
         .catch(err => res.status(400).json("Error: " + err));
 });
 
 router.route("/:id").patch((req, res) => {
-    const message = req.body;
+    const message = req.body.message;
+    //const message = "dasadsf";
 
-    Mailbox.findOneAndUpdate(
-        { belongsTo: req.params.id },
+    console.log(message);
+
+    Mailbox.findByIdAndUpdate(
+        { _id: req.params.id },
         { $push: { messages: message } }
     )
         .then(mailbox => {

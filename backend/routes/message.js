@@ -1,5 +1,5 @@
 const router = require("express").Router();
-let Message = require("../models/user.model");
+let Message = require("../models/message.model");
 
 router.route("/:id").get((req, res) => {
     Message.find({ mailboxId: req.params.id })
@@ -20,7 +20,6 @@ router.route("/").post((req, res) => {
     newMessage
         .save()
         .then(message => {
-            console.log(message);
             res.json(message._id);
         })
         .catch(err => res.status(400).json("Error: " + err));

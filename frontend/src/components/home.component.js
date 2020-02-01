@@ -23,6 +23,7 @@ export default class HomeComponent extends Component {
         axios
             .get("http://localhost:5000/home/" + props.match.params.id)
             .then(res => {
+                console.log(res);
                 this.setState({
                     username: res.data.username,
                     password: res.data.password,

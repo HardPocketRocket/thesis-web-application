@@ -70,7 +70,7 @@ export default class MessageComponent extends Component {
         axios
             .post("http://localhost:5000/message/", message)
             .then(res => {
-                axios.patch("http://localhost:5000/mailbox/" + this.state.mailboxId, res.data)
+                axios.patch("http://localhost:5000/mailbox/" + this.state.mailboxId, {message: res.data})
             });
     }
 
