@@ -33,8 +33,9 @@ export default class HomeComponent extends Component {
             });
     }
 
-    onMailboxClicked() {
-        this.props.history.push("/mailbox/");
+    onMailboxClicked(event) {
+        console.log("dasdfs");
+        this.props.history.push("/mailbox/" + sessionStorage.getItem("id"));
     }
 
     onChangeQuery(event) {
@@ -60,7 +61,7 @@ export default class HomeComponent extends Component {
                     />
                     <input type="submit" value="Search" />
                 </form>
-                <button onClick={this.onMailBoxClicked}>Mailbox</button>
+                <button onClick={this.onMailboxClicked}>Mailbox</button>
                 <Card>
                     <CardContent>
                         {this.state.username}

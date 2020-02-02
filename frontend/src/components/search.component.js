@@ -30,8 +30,6 @@ export default class SearchComponent extends Component {
     }
 
     onUserClicked(userId) {
-        let mailboxId;
-
         axios
             .get(
                 "http://localhost:5000/mailbox/" +
@@ -40,19 +38,17 @@ export default class SearchComponent extends Component {
                     userId
             )
             .then(res => {
-                console.log(res.data);
-                
                 if (res.data === null) {
                     axios
                         .post("http://localhost:5000/mailbox/", {
-                            belongsTo: sessionStorage.getItem("id"),
-                            messagesFrom: userId
+                            participants: [sessionStorage.getItem("id"), userId]
                         })
-                        .then(res => (mailboxId = res.data));
+                        .then(res => {
+                            this.props.history.push("/message/" + res.data);
+                        });
                 } else {
-                    mailboxId = res.data;
+                    this.props.history.push("/message/" + res.data);
                 }
-                this.props.history.push("/message/" + mailboxId);
             });
     }
 

@@ -2,7 +2,7 @@ const router = require("express").Router();
 let Mailbox = require("../models/mailbox.model");
 
 router.route("/:id").get((req, res) => {
-    Mailbox.find({ belongsTo: req.params.id })
+    Mailbox.find({ participants: req.params.id })
         .then(mailbox => {
             res.json(mailbox);
         })
@@ -10,26 +10,27 @@ router.route("/:id").get((req, res) => {
 });
 
 router.route("/:idTo/:idFrom").get((req, res) => {
+
     Mailbox.findOne({
-        belongsTo: req.params.idTo,
-        messagesFrom: req.params.idFrom
+        participants: { $all: [req.params.idFrom, req.params.idTo] }
     })
         .then(mailbox => {
-            res.json(mailbox._id);
+            if(mailbox !== null){
+                res.json(mailbox._id);
+            } else {
+                res.json(null);
+            }
         })
         .catch(err => res.status(400).json("Error: " + err));
 });
 
 router.route("/").post((req, res) => {
-    const belongsTo = req.body.belongsTo;
-    const messagesFrom = req.body.messagesFrom;
-
-    const newMailbox = new Mailbox({ belongsTo, messagesFrom });
+    const participants = req.body.participants;
+    const newMailbox = new Mailbox({participants});
 
     newMailbox
         .save()
         .then(mailbox => {
-            console.log("created");
             res.json(mailbox._id);
         })
         .catch(err => res.status(400).json("Error: " + err));
@@ -37,9 +38,6 @@ router.route("/").post((req, res) => {
 
 router.route("/:id").patch((req, res) => {
     const message = req.body.message;
-    //const message = "dasadsf";
-
-    console.log(message);
 
     Mailbox.findByIdAndUpdate(
         { _id: req.params.id },
