@@ -16,7 +16,7 @@ class App extends Component {
                 <Route path="/register" exact component={RegisterComponent} />
                 <Route path="/home/:id" exact component={HomeComponent} />
                 <Route path="/message/:id" exact component={MessageComponent} />
-                <Route path="mailbox/:id" exact component={MailboxComponent} />
+                <Route path="/mailbox/:id" exact component={MailboxComponent} />
                 <Route
                     path="/search/:query"
                     exact

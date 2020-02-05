@@ -20,7 +20,7 @@ router.route("/").post((req, res) => {
     newMessage
         .save()
         .then(message => {
-            res.json(message._id);
+            res.json(message);
         })
         .catch(err => res.status(400).json("Error: " + err));
 });
