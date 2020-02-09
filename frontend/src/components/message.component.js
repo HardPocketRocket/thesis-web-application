@@ -20,6 +20,7 @@ export default class MessageComponent extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onChangeReceiver = this.onChangeReceiver.bind(this);
 		this.onChangeMessage = this.onChangeMessage.bind(this);
+		this.getReceiver = this.getReceiver.bind(this);
 
 		socketClient = socket.connect('http://localhost:5000');
 		socketClient.emit('login', this.state.id);
@@ -37,6 +38,27 @@ export default class MessageComponent extends Component {
 					messageList: res.data
 				});
 			});
+
+		axios
+			.get('http://localhost:5000/mailbox/' + sessionStorage.getItem('id'))
+			.then(res => {
+				const receiver = this.getReceiver(res.data[0].participants);
+				
+				this.setState({
+					receiver: receiver
+				});
+			});
+	}
+
+	getReceiver(participants) {
+		let receiver;
+		
+		participants.forEach(element => {
+			if (element !== sessionStorage.getItem('id')) {
+				receiver = element;
+			}
+		});
+		return receiver;
 	}
 
 	componentDidMount() {
@@ -99,12 +121,6 @@ export default class MessageComponent extends Component {
 		return (
 			<div>
 				<form onSubmit={this.onSubmit}>
-					<label>To</label>
-					<input
-						type='text'
-						value={this.state.reciever}
-						onChange={this.onChangeReceiver}
-					/>
 					<br />
 					<label>Message</label>
 					<input
