@@ -1,11 +1,51 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import '../css/login.css'
+import { TextField, Button, Typography, withStyles } from '@material-ui/core';
 
-import { TextField, Button, Typography } from '@material-ui/core';
+const styles = {
+	form: {
+		marginTop: 300,
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center'
+	},
+	textField: {
+		width: '30%',
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		marginTop: 8,
+		marginBottom: 8
+	},
+	outlinedRoot: {
+		'&:hover $notchedOutline': {
+			borderColor: '#FF8E53',
+			borderWidth: 2
+		},
+		'&$focused $notchedOutline': {
+			borderColor: '#FE6B8B',
+			borderWidth: 2
+		}
+	},
+	notchedOutline: {},
+	focused: {},
+	label: {
+		'&$focusedLabel':{
+			color: '#FE6B8B',
+		}
+	},
+	focusedLabel: {},
+	button: {
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white',
+		height: 40,
+		width: '30%',
+		marginTop: 8
+	}
+};
 
-export default class LoginComponent extends Component {
+class LoginComponent extends Component {
 	constructor(props) {
 		super(props);
 
@@ -50,14 +90,16 @@ export default class LoginComponent extends Component {
 	}
 
 	render() {
+		const { classes } = this.props;
+
 		return (
-			<div className="Centered">
-				<Typography component='h1' variant='h5'>
-					Sign in
-				</Typography>
-				<form className="Form" onSubmit={this.onSubmit}>
+			<div>
+				<form className={classes.form} onSubmit={this.onSubmit}>
+					<Typography component='h1' variant='h5'>
+						Sign in
+					</Typography>
 					<TextField
-						className='Input'
+						className={classes.textField}
 						required
 						autoFocus
 						variant='outlined'
@@ -65,9 +107,23 @@ export default class LoginComponent extends Component {
 						type='text'
 						value={this.state.username}
 						onChange={this.onChangeUsername}
+						InputProps={{
+							classes: {
+								root: classes.outlinedRoot,
+								notchedOutline: classes.notchedOutline,
+								focused: classes.focused
+							}
+						}}
+						InputLabelProps={{
+							classes: {
+								root: classes.label,
+								focused: classes.focusedLabel
+							},
+							required: false
+						}}
 					/>
 					<TextField
-						className='Input'
+						className={classes.textField}
 						required
 						autoFocus
 						variant='outlined'
@@ -75,10 +131,32 @@ export default class LoginComponent extends Component {
 						type='password'
 						value={this.state.password}
 						onChange={this.onChangePassword}
+						InputProps={{
+							classes: {
+								root: classes.outlinedRoot,
+								notchedOutline: classes.notchedOutline,
+								focused: classes.focused
+							}
+						}}
+						InputLabelProps={{
+							classes: {
+								root: classes.label,
+								focused: classes.focusedLabel
+							},
+							required: false
+						}}
 					/>
-					<Button className="Button" variant="outlined" type='submit' value='submit'>Sign In</Button>
+					<Button
+						className={classes.button}
+						variant='outlined'
+						type='submit'
+						value='submit'>
+						Sign In
+					</Button>
 				</form>
 			</div>
 		);
 	}
 }
+
+export default withStyles(styles)(LoginComponent);
