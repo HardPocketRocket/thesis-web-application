@@ -1,105 +1,197 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 
-export default class RegisterComponent extends Component {
-    constructor(props) {
-        super(props);
+import { TextField, Button, Typography, withStyles } from '@material-ui/core';
 
-        this.state = {
-            username: "",
-            password: "",
-            isTutor: "false",
-            subjects: []
-        };
+const styles = {
+	form: {
+		marginTop: 300,
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center'
+	},
+	textField: {
+		width: '30%',
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		marginTop: 8,
+		marginBottom: 8
+	},
+	outlinedRoot: {
+		'&:hover $notchedOutline': {
+			borderColor: '#FF8E53',
+			borderWidth: 2
+		},
+		'&$focused $notchedOutline': {
+			borderColor: '#FE6B8B',
+			borderWidth: 2
+		}
+	},
+	notchedOutline: {},
+	focused: {},
+	label: {
+		'&$focusedLabel': {
+			color: '#FE6B8B'
+		}
+	},
+	focusedLabel: {},
+	button: {
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white',
+		height: 40,
+		width: '30%',
+		marginTop: 8
+	}
+};
 
-        //binding the functions this to the class' this
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangePassword = this.onChangePassword.bind(this);
-        this.onChangeIsTutor = this.onChangeIsTutor.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
+class RegisterComponent extends Component {
+	constructor(props) {
+		super(props);
 
-    onChangeUsername(event) {
-        this.setState({
-            username: event.target.value
-        });
-    }
+		this.state = {
+			username: '',
+			password: '',
+			isTutor: 'false',
+			subjects: []
+		};
 
-    onChangePassword(event) {
-        this.setState({
-            password: event.target.value
-        });
-    }
+		//binding the functions this to the class' this
+		this.onChangeUsername = this.onChangeUsername.bind(this);
+		this.onChangePassword = this.onChangePassword.bind(this);
+		this.onChangeIsTutor = this.onChangeIsTutor.bind(this);
+		this.onSubmit = this.onSubmit.bind(this);
+	}
 
-    onChangeIsTutor(event) {
-        this.setState({
-            isTutor: event.target.value
-        });
-    }
+	onChangeUsername(event) {
+		this.setState({
+			username: event.target.value
+		});
+	}
 
-    onSubmit(event) {
-        event.preventDefault();
+	onChangePassword(event) {
+		this.setState({
+			password: event.target.value
+		});
+	}
 
-        //User created with password + username to be passed in a request
-        const user = {
-            username: this.state.username,
-            password: this.state.password,
-            isTutor: this.state.isTutor,
-            subjects: this.state.subjects
-        };
+	onChangeIsTutor(event) {
+		this.setState({
+			isTutor: event.target.value
+		});
+	}
 
-        console.log(user);
+	onSubmit(event) {
+		event.preventDefault();
 
-        axios.post("http://localhost:5000/register", user).then(res => {
-            if (res.status === 200) {
-                this.props.history.push("/home/" + res.data);
-            }
-        });
-    }
+		//User created with password + username to be passed in a request
+		const user = {
+			username: this.state.username,
+			password: this.state.password,
+			isTutor: this.state.isTutor,
+			subjects: this.state.subjects
+		};
 
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.onSubmit}>
-                    <label>Username: </label>
-                    <input
-                        type="text"
-                        value={this.state.username}
-                        onChange={this.onChangeUsername}
-                    />
-                    <br />
-                    <label>Password: </label>
-                    <input
-                        type="password"
-                        value={this.state.password}
-                        onChange={this.onChangePassword}
-                    />
-                    <br />
-                    <div className="radio">
-                        <label>
-                            <input
-                                type="radio"
-                                value={"false"}
-                                checked={this.state.isTutor === "false"}
-                                onChange={this.onChangeIsTutor}
-                            />
-                            Student
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input
-                                type="radio"
-                                value={"true"}
-                                checked={this.state.isTutor === "true"}
-                                onChange={this.onChangeIsTutor}
-                            />
-                            Teacher
-                        </label>
-                    </div>
-                    <input type="submit" value="submit" />
-                </form>
-            </div>
-        );
-    }
+		console.log(user);
+
+		axios.post('http://localhost:5000/register', user).then(res => {
+			if (res.status === 200) {
+				this.props.history.push('/home/' + res.data);
+			}
+		});
+	}
+
+	render() {
+		const { classes } = this.props;
+
+		return (
+			<div>
+				<form className={classes.form} onSubmit={this.onSubmit}>
+					<Typography component='h1' variant='h5'>
+						Register
+					</Typography>
+					<TextField
+						className={classes.textField}
+						required
+						autoFocus
+						variant='outlined'
+						label='Username'
+						type='text'
+						value={this.state.username}
+						onChange={this.onChangeUsername}
+						InputProps={{
+							classes: {
+								root: classes.outlinedRoot,
+								notchedOutline: classes.notchedOutline,
+								focused: classes.focused
+							}
+						}}
+						InputLabelProps={{
+							classes: {
+								root: classes.label,
+								focused: classes.focusedLabel
+							},
+							required: false
+						}}
+					/>
+					<TextField
+						className={classes.textField}
+						required
+						autoFocus
+						variant='outlined'
+						label='Password'
+						type='password'
+						value={this.state.password}
+						onChange={this.onChangePassword}
+						InputProps={{
+							classes: {
+								root: classes.outlinedRoot,
+								notchedOutline: classes.notchedOutline,
+								focused: classes.focused
+							}
+						}}
+						InputLabelProps={{
+							classes: {
+								root: classes.label,
+								focused: classes.focusedLabel
+							},
+							required: false
+						}}
+					/>
+					<br />
+					<div className='radio'>
+						<label>
+							<input
+								type='radio'
+								value={'false'}
+								checked={this.state.isTutor === 'false'}
+								onChange={this.onChangeIsTutor}
+							/>
+							Student
+						</label>
+					</div>
+					<div className='radio'>
+						<label>
+							<input
+								type='radio'
+								value={'true'}
+								checked={this.state.isTutor === 'true'}
+								onChange={this.onChangeIsTutor}
+							/>
+							Teacher
+						</label>
+					</div>
+					<Button
+						className={classes.button}
+						variant='outlined'
+						type='submit'
+						value='submit'>
+						Register
+					</Button>
+				</form>
+			</div>
+		);
+	}
 }
+
+export default withStyles(styles)(RegisterComponent);
