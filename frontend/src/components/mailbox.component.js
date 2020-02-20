@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import { List, ListItem } from '@material-ui/core';
+
 export default class MailboxComponent extends Component {
 	constructor(props) {
 		super(props);
@@ -9,18 +11,46 @@ export default class MailboxComponent extends Component {
 			mailboxes: []
 		};
 
+		this.onMailboxClicked = this.onMailboxClicked.bind(this);
+		this.getReceiver = this.getReceiver.bind(this);
+
 		axios
 			.get(
 				'http://localhost:5000/mailbox/' + sessionStorage.getItem('id')
 			)
 			.then(res => {
-				console.log(res);
-				this.setState({ mailboxes: res.data });
+				let mailboxes = res.data;
+
+				let arrayOfPromises = mailboxes.map(mailbox => {
+					return axios.get(
+						'http://localhost:5000/user/' +
+							this.getReceiver(mailbox.participants)
+					);
+				});
+
+				Promise.all(arrayOfPromises).then(users => {
+					this.setState({
+						mailboxes: mailboxes.map((mailbox, index) => {
+							return ({mailbox: mailbox, user: users[index].data})
+						})
+					})
+				});
 			});
 	}
 
 	onMailboxClicked(mailboxId) {
 		this.props.history.push('/message/' + mailboxId);
+	}
+
+	getReceiver(participants) {
+		let receiver;
+
+		participants.forEach(element => {
+			if (element !== sessionStorage.getItem('id')) {
+				receiver = element;
+			}
+		});
+		return receiver;
 	}
 
 	render() {
@@ -29,15 +59,15 @@ export default class MailboxComponent extends Component {
 				return null;
 			}
 
-			const mailboxes = props.mailboxes.map(mailboxes => (
-				<li
-					key={mailboxes._id}
-					onClick={() => this.onMailboxClicked(mailboxes._id)}>
-					{mailboxes._id}
-				</li>
+			const mailboxes = props.mailboxes.map(obj => (
+				<ListItem
+					key={obj.mailbox._id}
+					onClick={() => this.onMailboxClicked(obj.mailbox._id)}>
+					{obj.user.username}
+				</ListItem>
 			));
 
-			return <ul>{mailboxes}</ul>;
+			return <List>{mailboxes}</List>;
 		};
 
 		return (

@@ -31,11 +31,11 @@ router.route('/').post((req, res) => {
 	newMailbox
 		.save()
 		.then(mailbox => {
-			participants.forEach((element, mailbox) => {
+			participants.forEach(element => {
 				User.findByIdAndUpdate(
 					{ _id: element },
 					{ $push: { mailboxes: mailbox._id } }
-				).then(results => console.log(results));
+				).then("update user table");
 			});
 			res.json(mailbox._id);
 		})

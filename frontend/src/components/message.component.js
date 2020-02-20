@@ -25,10 +25,11 @@ export default class MessageComponent extends Component {
 		socketClient = socket.connect('http://localhost:5000');
 		socketClient.emit('login', this.state.id);
 
-		socketClient.on('private', data => {
+		socketClient.on('private', message => {
 			this.setState(prevState => ({
-				messageList: [...prevState.messageList, data]
+				messageList: [...prevState.messageList, message]
 			}));
+			console.log(this.state.messageList);
 		});
 
 		axios
@@ -40,10 +41,12 @@ export default class MessageComponent extends Component {
 			});
 
 		axios
-			.get('http://localhost:5000/mailbox/' + sessionStorage.getItem('id'))
+			.get(
+				'http://localhost:5000/mailbox/' + sessionStorage.getItem('id')
+			)
 			.then(res => {
 				const receiver = this.getReceiver(res.data[0].participants);
-				
+
 				this.setState({
 					receiver: receiver
 				});
@@ -52,19 +55,13 @@ export default class MessageComponent extends Component {
 
 	getReceiver(participants) {
 		let receiver;
-		
+
 		participants.forEach(element => {
 			if (element !== sessionStorage.getItem('id')) {
 				receiver = element;
 			}
 		});
 		return receiver;
-	}
-
-	componentDidMount() {
-		setInterval(() => {
-			this.setState({});
-		}, 1000);
 	}
 
 	onChangeReceiver(event) {
@@ -82,11 +79,6 @@ export default class MessageComponent extends Component {
 	onSubmit(event) {
 		event.preventDefault();
 
-		socketClient.emit('private', {
-			receiver: this.state.receiver,
-			message: this.state.message
-		});
-
 		const message = {
 			mailboxId: this.state.mailboxId,
 			to: this.state.receiver,
@@ -102,6 +94,10 @@ export default class MessageComponent extends Component {
 			this.setState({
 				messageList: [...this.state.messageList, res.data]
 			});
+
+			socketClient.emit('private', res.data);
+
+			console.log(this.state.messageList);
 		});
 	}
 
@@ -131,7 +127,6 @@ export default class MessageComponent extends Component {
 					<br />
 					<input type='submit' value='Send' />
 				</form>
-				<br />
 				<br />
 				<br />
 				<Messages messages={this.state.messageList} />

@@ -6,8 +6,9 @@ router.route("/").post((req, res) => {
     const password = req.body.password;
     const isTutor = req.body.isTutor;
     const subjects = req.body.subjects;
+    const mailboxes = [];
 
-    const newUser = new User({ username, password, isTutor, subjects });
+    const newUser = new User({ username, password, isTutor, subjects, mailboxes });
 
     newUser
         .save()
