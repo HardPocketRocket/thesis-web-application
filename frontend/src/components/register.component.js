@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { TextField, Button, Typography, withStyles } from '@material-ui/core';
+import {
+	TextField,
+	Button,
+	Typography,
+	withStyles,
+	RadioGroup,
+	FormControlLabel,
+	Radio
+} from '@material-ui/core';
 
 const styles = {
 	form: {
 		marginTop: 300,
 		display: 'flex',
 		flexDirection: 'column',
+		alignItems: 'center'
+	},
+	radioForm: {
+		display: 'flex',
+		flexDirection: 'row',
 		alignItems: 'center'
 	},
 	textField: {
@@ -158,29 +171,22 @@ class RegisterComponent extends Component {
 							required: false
 						}}
 					/>
-					<br />
-					<div className='radio'>
-						<label>
-							<input
-								type='radio'
-								value={'false'}
-								checked={this.state.isTutor === 'false'}
-								onChange={this.onChangeIsTutor}
-							/>
-							Student
-						</label>
-					</div>
-					<div className='radio'>
-						<label>
-							<input
-								type='radio'
-								value={'true'}
-								checked={this.state.isTutor === 'true'}
-								onChange={this.onChangeIsTutor}
-							/>
-							Teacher
-						</label>
-					</div>
+					<RadioGroup
+						className={classes.radioForm}
+						name='isTutor'
+						value={this.state.isTutor}
+						onChange={this.onChangeIsTutor}>
+						<FormControlLabel
+							value='true'
+							control={<Radio />}
+							label='Tutor'
+						/>
+						<FormControlLabel
+							value='false'
+							control={<Radio />}
+							label='Student'
+						/>
+					</RadioGroup>
 					<Button
 						className={classes.button}
 						variant='outlined'
