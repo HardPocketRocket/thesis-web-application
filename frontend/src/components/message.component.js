@@ -1,10 +1,46 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import { withStyles, Box, Typography } from '@material-ui/core';
+
 const socket = require('socket.io-client');
 let socketClient;
 
-export default class MessageComponent extends Component {
+const styles = {
+	container: {
+		marginTop: 48,
+		display: 'flex',
+		flexDirection: 'column',
+		spacing: 2
+	},
+	sentMessage: {
+		marginTop: 16,
+		marginRight: 16,
+		borderRadius: '12px',
+		width: '40%',
+		maxWidth: 400,
+		minHeight: '32px',
+		alignSelf: 'flex-end',
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+	},
+	receivedMessage: {
+		marginTop: 16,
+		marginLeft: 16,
+		borderRadius: '12px',
+		width: '40%',
+		maxWidth: 400,
+		minHeight: '32px',
+		alignSelf: 'flex-start',
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+	},
+	text: {
+		paddingLeft: '8px',
+		paddingRight: '8px',
+		paddingTop: '5px'
+	}
+};
+
+class MessageComponent extends Component {
 	constructor(props) {
 		super(props);
 
@@ -102,16 +138,33 @@ export default class MessageComponent extends Component {
 	}
 
 	render() {
+		const { classes } = this.props;
+
 		const Messages = props => {
 			if (this.state.messageList.length < 1) {
 				return null;
 			}
 
-			const texts = props.messages.map(message => (
-				<li key={message._id}>{message.message}</li>
-			));
+			const texts = props.messages.map(message => {
+				let messageClass;
+				let textAlign;
 
-			return <ul>{texts}</ul>;
+				if (sessionStorage.getItem('id') === message.from) {
+					messageClass = classes.sentMessage;
+					textAlign = 'right'
+				} else {
+					messageClass = classes.receivedMessage;
+					textAlign = 'left'
+				}
+
+				return (
+					<Box textAlign={textAlign} className={messageClass} key={message._id}>
+						<Typography className={classes.text}>{message.message}</Typography>
+					</Box>
+				);
+			});
+
+			return <Box className={classes.container}>{texts}</Box>;
 		};
 
 		return (
@@ -127,10 +180,10 @@ export default class MessageComponent extends Component {
 					<br />
 					<input type='submit' value='Send' />
 				</form>
-				<br />
-				<br />
 				<Messages messages={this.state.messageList} />
 			</div>
 		);
 	}
 }
+
+export default withStyles(styles)(MessageComponent);

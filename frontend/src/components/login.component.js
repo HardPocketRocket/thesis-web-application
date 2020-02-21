@@ -12,8 +12,6 @@ const styles = {
 	},
 	textField: {
 		width: '30%',
-		marginLeft: 'auto',
-		marginRight: 'auto',
 		marginTop: 8,
 		marginBottom: 8
 	},
