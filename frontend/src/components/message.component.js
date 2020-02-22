@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { withStyles, Box, Typography } from '@material-ui/core';
+import {
+	withStyles,
+	Box,
+	Typography,
+	TextField,
+	Button
+} from '@material-ui/core';
 
 const socket = require('socket.io-client');
 let socketClient;
@@ -14,29 +20,70 @@ const styles = {
 		spacing: 2
 	},
 	sentMessage: {
+		flex: '0 1 auto',
 		marginTop: 16,
 		marginRight: 16,
 		borderRadius: '12px',
-		width: '40%',
-		maxWidth: 400,
+		maxWidth: '40%',
 		minHeight: '32px',
 		alignSelf: 'flex-end',
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+		background: 'linear-gradient(45deg, #FE6B8B 25%, #FF8E53 90%)'
+		
 	},
 	receivedMessage: {
+		flex: '0 1 auto',
 		marginTop: 16,
 		marginLeft: 16,
 		borderRadius: '12px',
-		width: '40%',
-		maxWidth: 400,
+		maxWidth: '40%',
 		minHeight: '32px',
 		alignSelf: 'flex-start',
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+		background: 'linear-gradient(45deg, #9d47bf 1%, #FE6B8B 90%)',
 	},
 	text: {
+		color: 'white',
+		wordBreak: 'break-all',
 		paddingLeft: '8px',
 		paddingRight: '8px',
-		paddingTop: '5px'
+		paddingTop: '5px',
+		alignSelf: 'flex-start',
+	},
+	textField: {
+		width: '90%'
+	},
+	outlinedRoot: {
+		'&:hover $notchedOutline': {
+			borderColor: '#FF8E53',
+			borderWidth: 2
+		},
+		'&$focused $notchedOutline': {
+			borderColor: '#FE6B8B',
+			borderWidth: 2
+		}
+	},
+	notchedOutline: {},
+	focused: {},
+	label: {
+		'&$focusedLabel': {
+			color: '#FE6B8B'
+		}
+	},
+	focusedLabel: {},
+	button: {
+		background: 'linear-gradient(45deg, #ff5e81 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white',
+		width: '10%',
+		minHeight: '56px',
+		marginLeft: '16px'
+	},
+	messageBox: {
+		display: 'flex',
+		flexDirection: 'row',
+		marginTop: 16,
+		marginBottom: 16,
+		marginLeft: 16,
+		marginRight: 16
 	}
 };
 
@@ -135,6 +182,10 @@ class MessageComponent extends Component {
 
 			console.log(this.state.messageList);
 		});
+
+		this.setState({
+			message: ''
+		})
 	}
 
 	render() {
@@ -151,15 +202,17 @@ class MessageComponent extends Component {
 
 				if (sessionStorage.getItem('id') === message.from) {
 					messageClass = classes.sentMessage;
-					textAlign = 'right'
 				} else {
 					messageClass = classes.receivedMessage;
-					textAlign = 'left'
 				}
 
 				return (
-					<Box textAlign={textAlign} className={messageClass} key={message._id}>
-						<Typography className={classes.text}>{message.message}</Typography>
+					<Box
+						className={messageClass}
+						key={message._id}>
+						<Typography className={classes.text}>
+							{message.message}
+						</Typography>
 					</Box>
 				);
 			});
@@ -169,18 +222,42 @@ class MessageComponent extends Component {
 
 		return (
 			<div>
-				<form onSubmit={this.onSubmit}>
-					<br />
-					<label>Message</label>
-					<input
-						type='text'
-						value={this.state.message}
-						onChange={this.onChangeMessage}
-					/>
-					<br />
-					<input type='submit' value='Send' />
-				</form>
 				<Messages messages={this.state.messageList} />
+				<form onSubmit={this.onSubmit}>
+					<Box className={classes.messageBox}>
+						<TextField
+							className={classes.textField}
+							required
+							autoFocus
+							variant='outlined'
+							label='Message'
+							type='text'
+							value={this.state.message}
+							onChange={this.onChangeMessage}
+							InputProps={{
+								classes: {
+									root: classes.outlinedRoot,
+									notchedOutline: classes.notchedOutline,
+									focused: classes.focused
+								}
+							}}
+							InputLabelProps={{
+								classes: {
+									root: classes.label,
+									focused: classes.focusedLabel
+								},
+								required: false
+							}}
+						/>
+						<Button
+							className={classes.button}
+							variant='outlined'
+							type='submit'
+							value='submit'>
+							Send
+						</Button>
+					</Box>
+				</form>
 			</div>
 		);
 	}
