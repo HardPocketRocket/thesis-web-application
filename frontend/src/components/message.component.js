@@ -74,7 +74,7 @@ const styles = {
 		border: 0,
 		color: 'white',
 		width: '10%',
-		minHeight: '56px',
+		minHeight: '58px',
 		marginLeft: '16px'
 	},
 	messageBox: {
@@ -198,7 +198,6 @@ class MessageComponent extends Component {
 
 			const texts = props.messages.map(message => {
 				let messageClass;
-				let textAlign;
 
 				if (sessionStorage.getItem('id') === message.from) {
 					messageClass = classes.sentMessage;

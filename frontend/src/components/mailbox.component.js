@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { List, ListItem } from '@material-ui/core';
+import { List, ListItem, withStyles } from '@material-ui/core';
 
-export default class MailboxComponent extends Component {
+const styles = {};
+
+class MailboxComponent extends Component {
 	constructor(props) {
 		super(props);
 
@@ -54,6 +56,8 @@ export default class MailboxComponent extends Component {
 	}
 
 	render() {
+		const { classes } = this.props;
+
 		const Mailbox = props => {
 			if (this.state.mailboxes.length < 1) {
 				return null;
@@ -77,3 +81,5 @@ export default class MailboxComponent extends Component {
 		);
 	}
 }
+
+export default withStyles(styles)(MailboxComponent);

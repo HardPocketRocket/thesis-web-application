@@ -4,7 +4,50 @@ import axios from "axios";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
-export default class HomeComponent extends Component {
+import { TextField, Button, withStyles} from '@material-ui/core';
+
+const styles = {
+	form: {
+		marginTop: 56,
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	textField: {
+		width: '90%',
+		marginLeft: 16,
+	},
+	outlinedRoot: {
+		'&:hover $notchedOutline': {
+			borderColor: '#FF8E53',
+			borderWidth: 2
+		},
+		'&$focused $notchedOutline': {
+			borderColor: '#FE6B8B',
+			borderWidth: 2
+		}
+	},
+	notchedOutline: {},
+	focused: {},
+	label: {
+		'&$focusedLabel':{
+			color: '#FE6B8B',
+		}
+	},
+	focusedLabel: {},
+	button: {
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white',
+		height: 40,
+		width: '10%',
+        marginRight: 16,
+        marginLeft: 16,
+        minHeight: '58px'
+	}
+};
+
+class HomeComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -51,16 +94,42 @@ export default class HomeComponent extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
-                    <input
-                        type="text"
-                        value={this.state.query}
-                        onChange={this.onChangeQuery}
-                    />
-                    <input type="submit" value="Search" />
-                </form>
+                <form className={classes.form} onSubmit={this.onSubmit}>
+					<TextField
+						className={classes.textField}
+						autoFocus
+						variant='outlined'
+						label='Search'
+						type='text'
+						value={this.state.query}
+						onChange={this.onChangeQuery}
+						InputProps={{
+							classes: {
+								root: classes.outlinedRoot,
+								notchedOutline: classes.notchedOutline,
+								focused: classes.focused
+							}
+						}}
+						InputLabelProps={{
+							classes: {
+								root: classes.label,
+								focused: classes.focusedLabel
+							},
+							required: false
+						}}
+					/>
+					<Button
+						className={classes.button}
+						variant='outlined'
+						type='submit'
+						value='Search'>
+						Search
+					</Button>
+				</form>
                 <button onClick={this.onMailboxClicked}>Mailbox</button>
                 <Card>
                     <CardContent>
@@ -78,3 +147,5 @@ export default class HomeComponent extends Component {
         );
     }
 }
+
+export default withStyles(styles)(HomeComponent);
