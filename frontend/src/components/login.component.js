@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
 import axios from 'axios';
 
 import { TextField, Button, Typography, withStyles } from '@material-ui/core';
@@ -28,8 +30,8 @@ const styles = {
 	notchedOutline: {},
 	focused: {},
 	label: {
-		'&$focusedLabel':{
-			color: '#FE6B8B',
+		'&$focusedLabel': {
+			color: '#FE6B8B'
 		}
 	},
 	focusedLabel: {},
@@ -39,7 +41,8 @@ const styles = {
 		color: 'white',
 		height: 40,
 		width: '30%',
-		marginTop: 8
+		marginTop: 8,
+		marginBottom: 8
 	}
 };
 
@@ -151,6 +154,9 @@ class LoginComponent extends Component {
 						value='submit'>
 						Sign In
 					</Button>
+					<RouterLink to='/register'>
+						Don't have an account? Login
+					</RouterLink>
 				</form>
 			</div>
 		);

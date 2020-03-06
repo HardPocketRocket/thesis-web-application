@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
 import axios from 'axios';
 
 import {
@@ -100,7 +102,8 @@ const styles = {
 		color: 'white',
 		height: 40,
 		width: '30%',
-		marginTop: 8
+		marginTop: 8,
+		marginBottom: 8
 	}
 };
 
@@ -222,27 +225,27 @@ class RegisterComponent extends Component {
 
 	render() {
 		const { classes } = this.props;
-		
+
 		let barColorClass;
 
 		switch (this.state.passwordStrength) {
 			case 1:
-				barColorClass = classes.barColorPrimary1
+				barColorClass = classes.barColorPrimary1;
 				break;
 			case 2:
-				barColorClass = classes.barColorPrimary2
+				barColorClass = classes.barColorPrimary2;
 				break;
 			case 3:
-				barColorClass = classes.barColorPrimary3
+				barColorClass = classes.barColorPrimary3;
 				break;
 			case 4:
-				barColorClass = classes.barColorPrimary4
+				barColorClass = classes.barColorPrimary4;
 				break;
 			case 5:
-				barColorClass = classes.barColorPrimary5
+				barColorClass = classes.barColorPrimary5;
 				break;
 			default:
-				barColorClass = classes.barColorPrimary1
+				barColorClass = classes.barColorPrimary1;
 				break;
 		}
 
@@ -382,6 +385,9 @@ class RegisterComponent extends Component {
 						value='submit'>
 						Register
 					</Button>
+					<RouterLink to='/login'>
+						Already have an account? Login
+					</RouterLink>
 				</form>
 			</div>
 		);
