@@ -3,6 +3,10 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import axios from 'axios';
 
+import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import LockOpenRoundedIcon from '@material-ui/icons/LockOpenRounded';
+import PermIdentityRoundedIcon from '@material-ui/icons/PermIdentityRounded';
+
 import {
 	TextField,
 	Button,
@@ -12,7 +16,8 @@ import {
 	FormControlLabel,
 	Radio,
 	Box,
-	LinearProgress
+	LinearProgress,
+	InputAdornment
 } from '@material-ui/core';
 
 const styles = {
@@ -103,7 +108,7 @@ const styles = {
 		height: 40,
 		width: '30%',
 		marginTop: 8,
-		marginBottom: 8
+		marginBottom: 16
 	}
 };
 
@@ -269,7 +274,12 @@ class RegisterComponent extends Component {
 								root: classes.outlinedRoot,
 								notchedOutline: classes.notchedOutline,
 								focused: classes.focused
-							}
+							},
+							startAdornment: (
+								<InputAdornment position='start'>
+									<PeopleOutlineRoundedIcon />
+								</InputAdornment>
+							)
 						}}
 						InputLabelProps={{
 							classes: {
@@ -293,7 +303,12 @@ class RegisterComponent extends Component {
 								root: classes.outlinedRoot,
 								notchedOutline: classes.notchedOutline,
 								focused: classes.focused
-							}
+							},
+							startAdornment: (
+								<InputAdornment position="start">
+								  <LockOpenRoundedIcon/>
+								</InputAdornment>
+							)
 						}}
 						InputLabelProps={{
 							classes: {
@@ -327,7 +342,12 @@ class RegisterComponent extends Component {
 									root: classes.outlinedRoot,
 									notchedOutline: classes.notchedOutline,
 									focused: classes.focused
-								}
+								},
+								startAdornment: (
+									<InputAdornment position="start">
+									  <PermIdentityRoundedIcon/>
+									</InputAdornment>
+								)
 							}}
 							InputLabelProps={{
 								classes: {
@@ -351,7 +371,12 @@ class RegisterComponent extends Component {
 									root: classes.outlinedRoot,
 									notchedOutline: classes.notchedOutline,
 									focused: classes.focused
-								}
+								},
+								startAdornment: (
+									<InputAdornment position="start">
+									  <PermIdentityRoundedIcon/>
+									</InputAdornment>
+								)
 							}}
 							InputLabelProps={{
 								classes: {

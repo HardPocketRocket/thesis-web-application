@@ -3,7 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import axios from 'axios';
 
-import { TextField, Button, Typography, withStyles } from '@material-ui/core';
+import { TextField, Button, Typography, withStyles, InputAdornment } from '@material-ui/core';
+import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import LockOpenRoundedIcon from '@material-ui/icons/LockOpenRounded';
 
 const styles = {
 	form: {
@@ -42,7 +44,7 @@ const styles = {
 		height: 40,
 		width: '30%',
 		marginTop: 8,
-		marginBottom: 8
+		marginBottom: 16
 	}
 };
 
@@ -113,7 +115,12 @@ class LoginComponent extends Component {
 								root: classes.outlinedRoot,
 								notchedOutline: classes.notchedOutline,
 								focused: classes.focused
-							}
+							},
+							startAdornment: (
+								<InputAdornment position="start">
+								  <PeopleOutlineRoundedIcon/>
+								</InputAdornment>
+							)
 						}}
 						InputLabelProps={{
 							classes: {
@@ -137,7 +144,12 @@ class LoginComponent extends Component {
 								root: classes.outlinedRoot,
 								notchedOutline: classes.notchedOutline,
 								focused: classes.focused
-							}
+							},
+							startAdornment: (
+								<InputAdornment position="start">
+								  <LockOpenRoundedIcon/>
+								</InputAdornment>
+							)
 						}}
 						InputLabelProps={{
 							classes: {
