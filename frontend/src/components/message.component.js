@@ -13,11 +13,16 @@ const socket = require('socket.io-client');
 let socketClient;
 
 const styles = {
-	container: {
-		marginTop: 48,
+	root: {
 		display: 'flex',
 		flexDirection: 'column',
-		spacing: 2
+	},
+	container: {
+		display: 'flex',
+		flexDirection: 'column',
+		spacing: 2,
+		maxHeight: '20%',
+		overflow: 'auto'
 	},
 	sentMessage: {
 		flex: '0 1 auto',
@@ -78,6 +83,7 @@ const styles = {
 		marginLeft: '16px'
 	},
 	messageBox: {
+		bottom: 0,
 		display: 'flex',
 		flexDirection: 'row',
 		marginTop: 16,
@@ -220,7 +226,7 @@ class MessageComponent extends Component {
 		};
 
 		return (
-			<div>
+			<div className={classes.root}>
 				<Messages messages={this.state.messageList} />
 				<form onSubmit={this.onSubmit}>
 					<Box className={classes.messageBox}>

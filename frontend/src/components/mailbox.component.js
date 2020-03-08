@@ -1,9 +1,39 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { List, ListItem, withStyles } from '@material-ui/core';
+import {
+	List,
+	ListItem,
+	withStyles,
+	Box,
+	ListItemIcon,
+	ListItemText
+} from '@material-ui/core';
+import DraftsIcon from '@material-ui/icons/Drafts';
 
-const styles = {};
+const styles = {
+	root: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center'
+	},
+	mailboxList: {
+		width: '40%',
+		maxHeight: '60%',
+		overflow: 'auto',
+		marginTop: '256px',
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+	},
+	list: {
+		width: '90%'
+	},
+	listItem: {
+		width: '100%'
+	}
+};
 
 class MailboxComponent extends Component {
 	constructor(props) {
@@ -33,9 +63,12 @@ class MailboxComponent extends Component {
 				Promise.all(arrayOfPromises).then(users => {
 					this.setState({
 						mailboxes: mailboxes.map((mailbox, index) => {
-							return ({mailbox: mailbox, user: users[index].data})
+							return {
+								mailbox: mailbox,
+								user: users[index].data
+							};
 						})
-					})
+					});
 				});
 			});
 	}
@@ -65,17 +98,26 @@ class MailboxComponent extends Component {
 
 			const mailboxes = props.mailboxes.map(obj => (
 				<ListItem
+					className={classes.listItem}
+					button
 					key={obj.mailbox._id}
 					onClick={() => this.onMailboxClicked(obj.mailbox._id)}>
-					{obj.user.username}
+					<ListItemIcon>
+						<DraftsIcon />
+					</ListItemIcon>
+					<ListItemText>{obj.user.username}</ListItemText>
 				</ListItem>
 			));
 
-			return <List>{mailboxes}</List>;
+			return (
+				<Box className={classes.mailboxList}>
+					<List className={classes.list}>{mailboxes}</List>
+				</Box>
+			);
 		};
 
 		return (
-			<div>
+			<div className={classes.root}>
 				<Mailbox mailboxes={this.state.mailboxes} />
 			</div>
 		);

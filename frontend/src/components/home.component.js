@@ -187,7 +187,7 @@ class HomeComponent extends Component {
 				</form>
 				<Box className={classes.mainBox}>
 					<Card className={classes.userBox}>
-					<img className={classes.picture} src={require('../assets/DefaultProfilePicture.jpg')} Alt=''/>
+					<img className={classes.picture} src={require('../assets/DefaultProfilePicture.jpg')} alt=''/>
 						<Button
 							className={classes.userBoxButton}
 							onClick={this.onMailboxClicked}
