@@ -156,12 +156,6 @@ class MessageComponent extends Component {
 		return receiver;
 	}
 
-	componentWillMount(){
-		var elem = document.getElementById('test');
-		console.log(elem);
-		
-	}
-
 	onChangeMessage(event) {
 		window.scrollTo(450, 2000);
 
@@ -199,6 +193,14 @@ class MessageComponent extends Component {
 		})
 	}
 
+	componentDidUpdate(){
+		let messageView = document.getElementById('messageView');
+
+		if(messageView){
+			messageView.scrollTop = messageView.scrollHeight;
+		}
+	}
+
 	render() {
 		const { classes } = this.props;
 
@@ -227,7 +229,7 @@ class MessageComponent extends Component {
 				);
 			});
 
-			return <Box id='test' className={classes.container}>{texts}</Box>;
+			return <Box id='messageView' className={classes.container}>{texts}</Box>;
 		};
 
 		return (
