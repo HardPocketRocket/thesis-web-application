@@ -202,13 +202,6 @@ class MessageComponent extends Component {
 	render() {
 		const { classes } = this.props;
 
-		if(document.getElementById('test')){
-			console.log('dsaf');
-			
-			document.getElementById('test').scrollTo(200, 600)
-		}
-		
-
 		const Messages = props => {
 			if (this.state.messageList.length < 1) {
 				return null;
