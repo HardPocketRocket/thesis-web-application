@@ -7,7 +7,8 @@ import {
 	withStyles,
 	Box,
 	ListItemIcon,
-	ListItemText
+	ListItemText,
+	Typography
 } from '@material-ui/core';
 import DraftsIcon from '@material-ui/icons/Drafts';
 
@@ -17,21 +18,35 @@ const styles = {
 		flexDirection: 'column',
 		alignItems: 'center'
 	},
-	mailboxList: {
+	title: {
+		marginTop: 256
+	},
+	mailboxBox: {
 		width: '40%',
 		maxHeight: '60%',
 		overflow: 'auto',
-		marginTop: '256px',
+		marginBottom: 256,
+		marginTop: 16,
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		borderRadius: '16px',
 	},
 	list: {
-		width: '90%'
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		width: '100%',
+		padding: 0,
+		margin: 4
 	},
 	listItem: {
-		width: '100%'
+		width: '94%',
+		background: 'white',
+		borderRadius: '12px',
+		marginTop: 8,
+		marginBottom: 8
 	}
 };
 
@@ -110,7 +125,7 @@ class MailboxComponent extends Component {
 			));
 
 			return (
-				<Box className={classes.mailboxList}>
+				<Box className={classes.mailboxBox}>
 					<List className={classes.list}>{mailboxes}</List>
 				</Box>
 			);
@@ -118,6 +133,9 @@ class MailboxComponent extends Component {
 
 		return (
 			<div className={classes.root}>
+				<Typography className={classes.title} component='h1' variant='h5'>
+					Mailbox
+				</Typography>
 				<Mailbox mailboxes={this.state.mailboxes} />
 			</div>
 		);

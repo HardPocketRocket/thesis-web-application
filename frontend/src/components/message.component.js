@@ -15,17 +15,18 @@ let socketClient;
 const styles = {
 	root: {
 		display: 'flex',
-		flexDirection: 'column',
+		flexDirection: 'column'
 	},
 	container: {
 		display: 'flex',
 		flexDirection: 'column',
 		spacing: 2,
-		maxHeight: '20%',
+		height: '92vh',
+		width: '100%',
 		overflow: 'auto'
 	},
 	sentMessage: {
-		flex: '0 1 auto',
+		flex: '0 0 auto',
 		marginTop: 16,
 		marginRight: 16,
 		borderRadius: '12px',
@@ -36,7 +37,7 @@ const styles = {
 		
 	},
 	receivedMessage: {
-		flex: '0 1 auto',
+		flex: '0 0 auto',
 		marginTop: 16,
 		marginLeft: 16,
 		borderRadius: '12px',
@@ -54,7 +55,9 @@ const styles = {
 		alignSelf: 'flex-start',
 	},
 	textField: {
-		width: '90%'
+		width: '87%',
+		postition: 'fixed',
+		left: '1%',
 	},
 	outlinedRoot: {
 		'&:hover $notchedOutline': {
@@ -79,17 +82,16 @@ const styles = {
 		border: 0,
 		color: 'white',
 		width: '10%',
-		minHeight: '58px',
-		marginLeft: '16px'
+		minHeight: '56px',
+		position: 'fixed',
+		right: '1%'
 	},
 	messageBox: {
-		bottom: 0,
 		display: 'flex',
 		flexDirection: 'row',
-		marginTop: 16,
-		marginBottom: 16,
-		marginLeft: 16,
-		marginRight: 16
+		position: 'fixed',
+		bottom: 16,
+		width: '100%'
 	}
 };
 
@@ -106,8 +108,9 @@ class MessageComponent extends Component {
 			messageList: []
 		};
 
+		const message = '';
+
 		this.onSubmit = this.onSubmit.bind(this);
-		this.onChangeReceiver = this.onChangeReceiver.bind(this);
 		this.onChangeMessage = this.onChangeMessage.bind(this);
 		this.getReceiver = this.getReceiver.bind(this);
 
@@ -153,13 +156,15 @@ class MessageComponent extends Component {
 		return receiver;
 	}
 
-	onChangeReceiver(event) {
-		this.setState({
-			receiver: event.target.value
-		});
+	componentWillMount(){
+		var elem = document.getElementById('test');
+		console.log(elem);
+		
 	}
 
 	onChangeMessage(event) {
+		window.scrollTo(450, 2000);
+
 		this.setState({
 			message: event.target.value
 		});
@@ -197,6 +202,13 @@ class MessageComponent extends Component {
 	render() {
 		const { classes } = this.props;
 
+		if(document.getElementById('test')){
+			console.log('dsaf');
+			
+			document.getElementById('test').scrollTo(200, 600)
+		}
+		
+
 		const Messages = props => {
 			if (this.state.messageList.length < 1) {
 				return null;
@@ -222,11 +234,11 @@ class MessageComponent extends Component {
 				);
 			});
 
-			return <Box className={classes.container}>{texts}</Box>;
+			return <Box id='test' className={classes.container}>{texts}</Box>;
 		};
 
 		return (
-			<div className={classes.root}>
+			<div>
 				<Messages messages={this.state.messageList} />
 				<form onSubmit={this.onSubmit}>
 					<Box className={classes.messageBox}>
