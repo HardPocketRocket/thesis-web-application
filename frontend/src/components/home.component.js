@@ -3,12 +3,7 @@ import axios from 'axios';
 
 import Card from '@material-ui/core/Card';
 
-import {
-	TextField,
-	Button,
-	withStyles,
-	Box
-} from '@material-ui/core';
+import { TextField, Button, withStyles, Box } from '@material-ui/core';
 
 const styles = {
 	form: {
@@ -47,7 +42,7 @@ const styles = {
 		borderRadius: '12px',
 		background: 'white',
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'row'
 	},
 	userBoxButton: {
 		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -66,7 +61,7 @@ const styles = {
 		marginTop: 44,
 		marginBottom: 8,
 		marginRight: 16,
-		borderRadius: '12px',
+		borderRadius: '12px'
 	},
 	textField: {
 		width: '90%',
@@ -94,12 +89,40 @@ const styles = {
 		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
 		border: 0,
 		color: 'white',
-		height: 40,
 		width: '10%',
 		marginRight: 16,
 		marginLeft: 16,
 		minHeight: '58px'
-	}
+	},
+	modal: {
+		position: 'fixed',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		background: 'rgba(0, 0, 0, 0.6)',
+		display: 'block'
+	},
+
+	modalMain: {
+		borderRadius: 12,
+		position: 'fixed',
+		background: 'white',
+		width: '50%',
+		height: '40%',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%,-50%)'
+	},
+	modalCloseButton: {
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		//color: 'white',
+		width: '10%',
+		marginRight: 16,
+		marginLeft: 16,
+		minHeight: '58px'
+	},
 };
 
 class HomeComponent extends Component {
@@ -111,7 +134,9 @@ class HomeComponent extends Component {
 			password: '',
 			isTutor: '',
 			subjects: [],
-			query: ''
+			query: '',
+			showEditModal: false,
+			showTutorEditModal: false
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -130,6 +155,27 @@ class HomeComponent extends Component {
 				});
 			});
 	}
+
+	showModal = () => {
+		this.setState({ showEditModal: true });
+		console.log('showModal');
+		
+	};
+
+	hideModal = () => {
+		this.setState({ showEditModal: false });
+		console.log('hideModal');
+	};
+
+	showTutorModal = () => {
+		this.setState({ showTutorEditModal: true });
+		console.log('showTutorModal');
+	};
+
+	hideTutorModal = () => {
+		this.setState({ showTutorEditModal: false });
+		console.log('hideTutorModal');
+	};
 
 	onMailboxClicked(event) {
 		console.log('dasdfs');
@@ -150,6 +196,56 @@ class HomeComponent extends Component {
 
 	render() {
 		const { classes } = this.props;
+
+		const EditButton = () => {
+			if (this.state.isTutor) {
+				return (
+					<Button
+						className={classes.userBoxButton}
+						variant='outlined'
+						onClick={this.showTutorModal}>
+						Edit Profile & Subjects
+					</Button>
+				);
+			} else {
+				return (
+					<Button
+						className={classes.userBoxButton}
+						variant='outlined'
+						onClick={this.showModal}>
+						Edit Profile
+					</Button>
+				);
+			}
+		};
+
+		const Modal = () => {
+			if(this.state.showEditModal){
+				return (
+					<div className={classes.modal}>
+						<section className={classes.modalMain}>
+							<p>Normal Modal</p>
+							<Button className={classes.modalCloseButton} onClick={this.hideModal}>Close</Button>
+						</section>
+					</div>
+				);
+			}
+
+			if(this.state.showTutorEditModal){
+				return (
+					<div className={classes.modal}>
+						<section className={classes.modalMain}>
+							<p>Tutor Modal</p>
+							<Button className={classes.modalCloseButton} onClick={this.hideTutorModal}>Close</Button>
+						</section>
+					</div>
+				);
+			}
+
+			else {
+				return null;
+			}
+		};
 
 		return (
 			<div>
@@ -187,21 +283,23 @@ class HomeComponent extends Component {
 				</form>
 				<Box className={classes.mainBox}>
 					<Card className={classes.userBox}>
-					<img className={classes.picture} src={require('../assets/DefaultProfilePicture.jpg')} alt=''/>
+						<img
+							className={classes.picture}
+							src={require('../assets/DefaultProfilePicture.jpg')}
+							alt=''
+						/>
 						<Button
 							className={classes.userBoxButton}
 							onClick={this.onMailboxClicked}
 							variant='outlined'>
 							Mailbox
 						</Button>
-						<Button
-							className={classes.userBoxButton}
-							variant='outlined'>
-							Edit Profile
-						</Button>
+						<EditButton></EditButton>
 					</Card>
 					<Box className={classes.schedule}>Schedule Placeholder</Box>
 				</Box>
+				<Modal show={this.state.showEditModal}></Modal>
+				<Modal show={this.state.showTutorEditModal}></Modal>
 			</div>
 		);
 	}
