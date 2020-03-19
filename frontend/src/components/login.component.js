@@ -167,7 +167,7 @@ class LoginComponent extends Component {
 						Sign In
 					</Button>
 					<RouterLink to='/register'>
-						Don't have an account? Login
+						Don't have an account? Register
 					</RouterLink>
 				</form>
 			</div>
