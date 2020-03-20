@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { TextField, Button, withStyles} from '@material-ui/core';
+import { TextField, Button, withStyles } from '@material-ui/core';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 const styles = {
 	form: {
@@ -12,7 +15,7 @@ const styles = {
 	},
 	textField: {
 		width: '90%',
-		marginLeft: 16,
+		marginLeft: 16
 	},
 	outlinedRoot: {
 		'&:hover $notchedOutline': {
@@ -27,8 +30,8 @@ const styles = {
 	notchedOutline: {},
 	focused: {},
 	label: {
-		'&$focusedLabel':{
-			color: '#FE6B8B',
+		'&$focusedLabel': {
+			color: '#FE6B8B'
 		}
 	},
 	focusedLabel: {},
@@ -38,10 +41,22 @@ const styles = {
 		color: 'white',
 		height: 40,
 		width: '10%',
-        marginRight: 16,
-        marginLeft: 16,
-        minHeight: '58px'
-	}
+		marginRight: 16,
+		marginLeft: 16,
+		minHeight: '58px'
+	},
+	titleBar: {
+		background:
+			'linear-gradient(to top, rgba(0,0,0,0.7) 0%, ' +
+			'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+	},
+	gridList: {
+		paddingTop: 32,
+		paddingLeft: 16,
+		paddingRight: 16,
+		width: '98%',
+		height: '80%'
+	},
 };
 
 class SearchComponent extends Component {
@@ -128,14 +143,31 @@ class SearchComponent extends Component {
 			}
 
 			const options = props.results.map(result => (
-				<li
+				<GridListTile
 					key={result._id}
-					onClick={() => this.onUserClicked(result._id)}>
-					{result.username}
-				</li>
+					onClick={() => this.onUserClicked(result._id)}
+					cols={1}
+					rows={1}>
+					<img
+						src={require('../assets/DefaultProfilePicture.jpg')}
+						alt='Profile'
+					/>
+					<GridListTileBar
+						title={result.username}
+						subtitle={"Name: " + result.firstName + " " + result.lastName}
+					/>
+				</GridListTile>
 			));
 
-			return <ul>{options}</ul>;
+			return (
+				<GridList
+					cols={4}
+					cellHeight={252}
+					spacing={16}
+					className={classes.gridList}>
+					{options}
+				</GridList>
+			);
 		};
 
 		return (

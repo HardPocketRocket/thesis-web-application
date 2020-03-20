@@ -223,6 +223,7 @@ class RegisterComponent extends Component {
 
 		axios.post('http://localhost:5000/register', user).then(res => {
 			if (res.status === 200) {
+				sessionStorage.setItem('id', res.data);
 				this.props.history.push('/home/' + res.data);
 			}
 		});
