@@ -108,8 +108,6 @@ class MessageComponent extends Component {
 			messageList: []
 		};
 
-		const message = '';
-
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onChangeMessage = this.onChangeMessage.bind(this);
 		this.getReceiver = this.getReceiver.bind(this);

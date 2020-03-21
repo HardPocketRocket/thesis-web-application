@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
+import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import {
@@ -15,28 +16,30 @@ import {
 	Button,
 	withStyles,
 	Box,
-	Typography
+	Typography,
+	Icon,
+	Grid
 } from '@material-ui/core';
 
 const styles = {
 	form: {
-		marginTop: 56,
+		marginTop: 40,
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
 	mainBox: {
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
 		marginLeft: 16,
 		marginRight: 16,
 		marginTop: 32,
 		display: 'flex',
 		flexDirection: 'row',
-		height: '780px',
+		height: '84vh',
 		borderRadius: '12px'
 	},
 	userBox: {
-		width: '20%',
+		width: '25%',
 		marginLeft: 24,
 		marginTop: 24,
 		marginBottom: 24,
@@ -58,7 +61,7 @@ const styles = {
 		flexDirection: 'row'
 	},
 	userBoxButton: {
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
 		border: 0,
 		color: 'white',
 		height: 40,
@@ -69,10 +72,10 @@ const styles = {
 	},
 	picture: {
 		width: '80%',
-		height: '45%',
+		height: '40%',
 		marginLeft: 16,
 		marginTop: 44,
-		marginBottom: 8,
+		marginBottom: 16,
 		marginRight: 16,
 		borderRadius: '12px'
 	},
@@ -82,11 +85,11 @@ const styles = {
 	},
 	outlinedRoot: {
 		'&:hover $notchedOutline': {
-			borderColor: '#FF8E53',
+			borderColor: '#2196F3',
 			borderWidth: 2
 		},
 		'&$focused $notchedOutline': {
-			borderColor: '#FE6B8B',
+			borderColor: '#2196F3',
 			borderWidth: 2
 		}
 	},
@@ -94,12 +97,12 @@ const styles = {
 	focused: {},
 	label: {
 		'&$focusedLabel': {
-			color: '#FE6B8B'
+			color: '#2196F3'
 		}
 	},
 	focusedLabel: {},
 	button: {
-		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
 		border: 0,
 		color: 'white',
 		width: '10%',
@@ -169,6 +172,9 @@ const styles = {
 	},
 	selectLabel: {
 		marginLeft: '4%'
+	},
+	userInfoGrid: {
+		marginLeft: '20%'
 	}
 };
 
@@ -185,7 +191,9 @@ class HomeComponent extends Component {
 			showEditModal: false,
 			showTutorEditModal: false,
 			newSubject: '',
-			deleteSubject: ''
+			deleteSubject: '',
+			firstName: '',
+			lastName: ''
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -204,20 +212,12 @@ class HomeComponent extends Component {
 					username: res.data.username,
 					password: res.data.password,
 					isTutor: res.data.isTutor,
-					subjects: res.data.subjects
+					subjects: res.data.subjects,
+					firstName: res.data.firstName,
+					lastName: res.data.lastName
 				});
 			});
 	}
-
-	showModal = () => {
-		this.setState({ showEditModal: true });
-		console.log('showModal');
-	};
-
-	hideModal = () => {
-		this.setState({ showEditModal: false });
-		console.log('hideModal');
-	};
 
 	showTutorModal = () => {
 		this.setState({ showTutorEditModal: true });
@@ -290,7 +290,9 @@ class HomeComponent extends Component {
 
 		axios
 			.patch(
-				'http://localhost:5000/user/' + sessionStorage.getItem('id') + '/subjects',
+				'http://localhost:5000/user/' +
+					sessionStorage.getItem('id') +
+					'/subjects',
 				{ subject: this.state.deleteSubject }
 			)
 			.then(res => {
@@ -321,22 +323,6 @@ class HomeComponent extends Component {
 		};
 
 		const Modal = () => {
-			//Currently not in use
-			if (this.state.showEditModal) {
-				return (
-					<div className={classes.modal}>
-						<section className={classes.modalMain}>
-							<p>Normal Modal</p>
-							<Button
-								className={classes.modalCloseButton}
-								onClick={this.hideModal}>
-								Close
-							</Button>
-						</section>
-					</div>
-				);
-			}
-
 			if (this.state.showTutorEditModal) {
 				return (
 					<div className={classes.modal}>
@@ -462,6 +448,18 @@ class HomeComponent extends Component {
 							src={require('../assets/DefaultProfilePicture.jpg')}
 							alt=''
 						/>
+						<Grid container spacing={1} className={classes.userInfoGrid}>
+							<Grid item>
+								<PeopleOutlineRoundedIcon />
+							</Grid>
+							<Grid item >
+								<Typography>
+									{this.state.firstName +
+										' ' +
+										this.state.lastName}
+								</Typography>
+							</Grid>
+						</Grid>
 						<Button
 							className={classes.userBoxButton}
 							onClick={this.onMailboxClicked}
@@ -470,7 +468,7 @@ class HomeComponent extends Component {
 						</Button>
 						<EditButton></EditButton>
 					</Card>
-					<Box className={classes.schedule}>Schedule Placeholder</Box>
+					<Box className={classes.schedule}></Box>
 				</Box>
 				<Modal show={this.state.showEditModal}></Modal>
 				<Modal show={this.state.showTutorEditModal}></Modal>
