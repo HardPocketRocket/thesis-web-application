@@ -7,30 +7,14 @@ router.route('/:id').get((req, res) => {
 		.catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').patch((req, res) => {
-	const subject = req.body.subject;
-
-	User.findByIdAndUpdate(
-		{ _id: req.params.id },
-		{ $push: { subjects: subject } },
-		{ new: true }
-	)
-		.then(user => {
-			res.json(user);
-			console.log(user);
-		})
-		.catch(err => res.status(400).json('Error: ' + err));
-});
-
 router.route('/:id/subjects').patch((req, res) => {
-    const subject = req.body.subject;
-    
-    console.log(subject);
-    
+	const newSubjects = req.body.subjects;
+
+	console.log(newSubjects);
 
 	User.findByIdAndUpdate(
 		{ _id: req.params.id },
-		{ $pull: { subjects: subject }},
+		{ $set: { subjects: newSubjects } },
 		{ new: true }
 	)
 		.then(user => {

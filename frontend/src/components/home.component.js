@@ -8,7 +8,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import EventIcon from '@material-ui/icons/Event';
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import WcIcon from '@material-ui/icons/Wc';
+import CakeIcon from '@material-ui/icons/Cake';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import {
@@ -17,7 +21,6 @@ import {
 	withStyles,
 	Box,
 	Typography,
-	Icon,
 	Grid
 } from '@material-ui/core';
 
@@ -188,12 +191,15 @@ class HomeComponent extends Component {
 			isTutor: '',
 			subjects: [],
 			query: '',
-			showEditModal: false,
+			showProfileEditModal: false,
 			showTutorEditModal: false,
 			newSubject: '',
 			deleteSubject: '',
 			firstName: '',
-			lastName: ''
+			lastName: '',
+			joinDate: '',
+			birthday: '',
+			gender: ''
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -216,21 +222,49 @@ class HomeComponent extends Component {
 					firstName: res.data.firstName,
 					lastName: res.data.lastName
 				});
+
+				//Mock Data for frontend cuz db isn't updated yet
+				let options = {
+					weekday: 'long',
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric'
+				};
+				let today = new Date();
+				let mockBirthday = new Date('December 25, 1995');
+				let formattedToday = new Intl.DateTimeFormat(
+					'en-US',
+					options
+				).format(today);
+				let formattedMockBirthday = new Intl.DateTimeFormat(
+					'en-US',
+					options
+				).format(mockBirthday);
+				this.setState({
+					joinDate: formattedToday,
+					gender: 'Male',
+					birthday: formattedMockBirthday
+				});
 			});
 	}
 
+	showProfileModal = () => {
+		this.setState({ showProfileEditModal: true });
+	};
+
+	hideProfileModal = () => {
+		this.setState({ showProfileEditModal: false });
+	};
+
 	showTutorModal = () => {
 		this.setState({ showTutorEditModal: true });
-		console.log('showTutorModal');
 	};
 
 	hideTutorModal = () => {
 		this.setState({ showTutorEditModal: false });
-		console.log('hideTutorModal');
 	};
 
 	onMailboxClicked(event) {
-		console.log('dasdfs');
 		this.props.history.push('/mailbox/' + sessionStorage.getItem('id'));
 	}
 
@@ -263,20 +297,7 @@ class HomeComponent extends Component {
 
 		this.setState({
 			subjects: [...this.state.subjects, this.state.newSubject]
-		});
-
-		axios
-			.patch(
-				'http://localhost:5000/user/' + sessionStorage.getItem('id'),
-				{ subject: this.state.newSubject }
-			)
-			.then(res => {
-				console.log(res);
-
-				this.setState({
-					newSubject: ''
-				});
-			});
+		}, this.updateSubjectsCallback);
 	}
 
 	onSubmitDeleteSubject(event) {
@@ -286,20 +307,23 @@ class HomeComponent extends Component {
 			subjects: this.state.subjects.filter(
 				elem => elem !== this.state.deleteSubject
 			)
-		});
+		}, this.updateSubjectsCallback);
+	}
 
+	updateSubjectsCallback = () => {
 		axios
 			.patch(
 				'http://localhost:5000/user/' +
 					sessionStorage.getItem('id') +
 					'/subjects',
-				{ subject: this.state.deleteSubject }
+				{ subjects: this.state.subjects}
 			)
 			.then(res => {
 				console.log(res);
 
 				this.setState({
-					deleteSubject: ''
+					deleteSubject: '',
+					newSubject: ''
 				});
 			});
 	}
@@ -322,7 +346,29 @@ class HomeComponent extends Component {
 			}
 		};
 
-		const Modal = () => {
+		const ProfileModal = () => {
+			if (this.state.showProfileEditModal) {
+				return (
+					<div className={classes.modal}>
+						<section className={classes.modalMain}>
+							<Typography
+								className={classes.modalText}
+								variant='h6'>
+								Edit Profile
+							</Typography>
+							<Button
+								className={classes.modalCloseButton}
+								onClick={this.hideProfileModal}
+								startIcon={<CloseIcon />}></Button>
+						</section>
+					</div>
+				);
+			} else {
+				return null;
+			}
+		};
+
+		const TutorModal = () => {
 			if (this.state.showTutorEditModal) {
 				return (
 					<div className={classes.modal}>
@@ -448,15 +494,52 @@ class HomeComponent extends Component {
 							src={require('../assets/DefaultProfilePicture.jpg')}
 							alt=''
 						/>
-						<Grid container spacing={1} className={classes.userInfoGrid}>
-							<Grid item>
+						<Grid
+							container
+							spacing={1}
+							alignItems='flex-start'
+							className={classes.userInfoGrid}>
+							<Grid item xs={1}>
 								<PeopleOutlineRoundedIcon />
 							</Grid>
-							<Grid item >
+							<Grid item xs={11}>
 								<Typography>
-									{this.state.firstName +
+									{'Name: ' +
+										this.state.firstName +
 										' ' +
 										this.state.lastName}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<AssignmentIndIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Username: ' + this.state.username}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<WcIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Gender: ' + this.state.gender}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<EventIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Join Date: ' + this.state.joinDate}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<CakeIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Birthday: ' + this.state.birthday}
 								</Typography>
 							</Grid>
 						</Grid>
@@ -466,12 +549,19 @@ class HomeComponent extends Component {
 							variant='outlined'>
 							Mailbox
 						</Button>
+						<Button
+							className={classes.userBoxButton}
+							variant='outlined'
+							onClick={this.showProfileModal}>
+							Edit Profile
+						</Button>
 						<EditButton></EditButton>
 					</Card>
 					<Box className={classes.schedule}></Box>
 				</Box>
-				<Modal show={this.state.showEditModal}></Modal>
-				<Modal show={this.state.showTutorEditModal}></Modal>
+				<ProfileModal
+					show={this.state.showProfileEditModal}></ProfileModal>
+				<TutorModal show={this.state.showTutorEditModal}></TutorModal>
 			</div>
 		);
 	}
