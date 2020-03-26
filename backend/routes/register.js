@@ -7,10 +7,13 @@ router.route("/").post((req, res) => {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const isTutor = req.body.isTutor;
+    const dateOfBirth = req.body.dateOfBirth;
+    const joinDate = req.body.joinDate;
+    const gender = req.body.gender;
     const subjects = req.body.subjects;
     const mailboxes = [];
 
-    const newUser = new User({ username, password, firstName, lastName, isTutor, subjects, mailboxes });
+    const newUser = new User({ username, password, firstName, lastName, isTutor, dateOfBirth, joinDate, gender, subjects, mailboxes });
 
     newUser
         .save()

@@ -2,10 +2,20 @@ import React, { Component } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import axios from 'axios';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
 
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import LockOpenRoundedIcon from '@material-ui/icons/LockOpenRounded';
 import PermIdentityRoundedIcon from '@material-ui/icons/PermIdentityRounded';
+
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import {
+	MuiPickersUtilsProvider,
+	KeyboardDatePicker
+} from '@material-ui/pickers';
 
 import {
 	TextField,
@@ -17,8 +27,10 @@ import {
 	Radio,
 	Box,
 	LinearProgress,
-	InputAdornment
+	InputAdornment,
+	Grid
 } from '@material-ui/core';
+import { format } from 'date-fns';
 
 const styles = {
 	form: {
@@ -109,6 +121,29 @@ const styles = {
 		width: '30%',
 		marginTop: 8,
 		marginBottom: 16
+	},
+	grid: {
+		width: '30%',
+		display: 'flex',
+		flexDirection: 'row',
+	},
+	datePicker: {
+		width: '95%'
+	},
+	genderPicker: {
+		marginTop: 16,
+		width: '100%'
+	},
+	calendar: {
+		'& .MuiPickersToolbar-toolbar':{
+            background:'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        },
+        '& .MuiPickersDay-daySelected':{
+            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        },
+        '& .MuiButton-textPrimary':{
+            color: '#FE6B8B'
+        }
 	}
 };
 
@@ -123,7 +158,9 @@ class RegisterComponent extends Component {
 			lastName: '',
 			isTutor: 'false',
 			subjects: [],
-			passwordStrength: 0
+			dateOfBirth: 'January 01, 2000',
+			passwordStrength: 0,
+			gender: 'Male'
 		};
 
 		//binding the functions this to the class' this
@@ -133,6 +170,7 @@ class RegisterComponent extends Component {
 		this.onChangeFirstName = this.onChangeFirstName.bind(this);
 		this.onChangeLastName = this.onChangeLastName.bind(this);
 		this.onChangeIsTutor = this.onChangeIsTutor.bind(this);
+		this.onChangeGender = this.onChangeGender.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
@@ -206,20 +244,32 @@ class RegisterComponent extends Component {
 		});
 	}
 
+	onChangeGender(event) {
+		this.setState({
+			gender: event.target.value
+		});
+	}
+
+	handleDateChange = date => {
+		this.setState({
+			dateOfBirth: format(date, 'MMMM dd, yyyy')
+		});
+	};
+
 	onSubmit(event) {
 		event.preventDefault();
 
-		//User created with password + username to be passed in a request
 		const user = {
 			username: this.state.username,
 			password: this.state.password,
 			firstName: this.state.firstName,
 			lastName: this.state.lastName,
 			isTutor: this.state.isTutor,
-			subjects: this.state.subjects
+			subjects: this.state.subjects,
+			dateOfBirth: this.state.dateOfBirth,
+			joinDate: format(new Date(), 'MMMM dd, yyyy'),
+			gender: this.state.gender,
 		};
-
-		console.log(user);
 
 		axios.post('http://localhost:5000/register', user).then(res => {
 			if (res.status === 200) {
@@ -306,8 +356,8 @@ class RegisterComponent extends Component {
 								focused: classes.focused
 							},
 							startAdornment: (
-								<InputAdornment position="start">
-								  <LockOpenRoundedIcon/>
+								<InputAdornment position='start'>
+									<LockOpenRoundedIcon />
 								</InputAdornment>
 							)
 						}}
@@ -345,8 +395,8 @@ class RegisterComponent extends Component {
 									focused: classes.focused
 								},
 								startAdornment: (
-									<InputAdornment position="start">
-									  <PermIdentityRoundedIcon/>
+									<InputAdornment position='start'>
+										<PermIdentityRoundedIcon />
 									</InputAdornment>
 								)
 							}}
@@ -374,8 +424,8 @@ class RegisterComponent extends Component {
 									focused: classes.focused
 								},
 								startAdornment: (
-									<InputAdornment position="start">
-									  <PermIdentityRoundedIcon/>
+									<InputAdornment position='start'>
+										<PermIdentityRoundedIcon />
 									</InputAdornment>
 								)
 							}}
@@ -388,6 +438,42 @@ class RegisterComponent extends Component {
 							}}
 						/>
 					</Box>
+					<Grid container className={classes.grid}>
+						<Grid item xs={8}>
+							<MuiPickersUtilsProvider utils={DateFnsUtils}>
+								<KeyboardDatePicker
+									inputVariant='outlined'
+									variant='dialogue'
+									DialogProps={
+										{className: classes.calendar}
+									}
+									className={classes.datePicker}
+									format='MM/dd/yyyy'
+									margin='normal'
+									label='Date of Birth'
+									value={this.state.dateOfBirth}
+									onChange={this.handleDateChange}
+								/>
+							</MuiPickersUtilsProvider>
+						</Grid>
+						<Grid item xs={4}>
+							<Select
+								variant='outlined'
+								className={classes.genderPicker}
+								onChange={this.onChangeGender}
+								value={this.state.gender}>
+								<MenuItem key='Male' value='Male'>
+									Male
+								</MenuItem>
+								<MenuItem key='Female' value='Female'>
+									Female
+								</MenuItem>
+								<MenuItem key='Other' value='Other'>
+									Other
+								</MenuItem>
+							</Select>
+						</Grid>
+					</Grid>
 					<RadioGroup
 						className={classes.radioForm}
 						name='isTutor'

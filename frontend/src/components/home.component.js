@@ -170,11 +170,12 @@ const styles = {
 		marginLeft: '2%'
 	},
 	modalSelect: {
-		width: '68%',
-		marginLeft: '4%'
+		width: '70%',
+		marginLeft: '2%'
 	},
 	selectLabel: {
-		marginLeft: '4%'
+		marginLeft: '2%',
+		marginBottom: 8
 	},
 	userInfoGrid: {
 		marginLeft: '20%'
@@ -190,16 +191,22 @@ class HomeComponent extends Component {
 			password: '',
 			isTutor: '',
 			subjects: [],
+			firstName: '',
+			lastName: '',
+			joinDate: '',
+			dateOfBirth: '',
+			gender: '',
 			query: '',
 			showProfileEditModal: false,
 			showTutorEditModal: false,
 			newSubject: '',
 			deleteSubject: '',
-			firstName: '',
-			lastName: '',
-			joinDate: '',
-			birthday: '',
-			gender: ''
+		};
+
+		let options = {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -214,36 +221,20 @@ class HomeComponent extends Component {
 			.get('http://localhost:5000/home/' + props.match.params.id)
 			.then(res => {
 				console.log(res);
+
 				this.setState({
 					username: res.data.username,
 					password: res.data.password,
 					isTutor: res.data.isTutor,
 					subjects: res.data.subjects,
 					firstName: res.data.firstName,
-					lastName: res.data.lastName
-				});
-
-				//Mock Data for frontend cuz db isn't updated yet
-				let options = {
-					weekday: 'long',
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric'
-				};
-				let today = new Date();
-				let mockBirthday = new Date('December 25, 1995');
-				let formattedToday = new Intl.DateTimeFormat(
-					'en-US',
-					options
-				).format(today);
-				let formattedMockBirthday = new Intl.DateTimeFormat(
-					'en-US',
-					options
-				).format(mockBirthday);
-				this.setState({
-					joinDate: formattedToday,
-					gender: 'Male',
-					birthday: formattedMockBirthday
+					lastName: res.data.lastName,
+					dateOfBirth: Intl.DateTimeFormat(
+						'en-US',
+						options
+					).format(new Date(res.data.dateOfBirth)),
+					joinDate: res.data.joinDate,
+					gender: res.data.gender
 				});
 			});
 	}
@@ -428,6 +419,7 @@ class HomeComponent extends Component {
 								</InputLabel>
 								<Select
 									labelId='select'
+									variant='outlined'
 									className={classes.modalSelect}
 									onChange={this.onChangeDeleteSubject}
 									value={this.state.deleteSubject}>
@@ -539,7 +531,7 @@ class HomeComponent extends Component {
 							</Grid>
 							<Grid item xs={11}>
 								<Typography>
-									{'Birthday: ' + this.state.birthday}
+									{'Birthday: ' + this.state.dateOfBirth}
 								</Typography>
 							</Grid>
 						</Grid>
