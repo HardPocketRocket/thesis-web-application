@@ -120,7 +120,7 @@ class MailboxComponent extends Component {
 					<ListItemIcon>
 						<DraftsIcon />
 					</ListItemIcon>
-					<ListItemText>{obj.user.username}</ListItemText>
+					<ListItemText primary={'Username: ' + obj.user.username} secondary={'Name: ' + obj.user.firstName + ' ' + obj.user.lastName}/>
 				</ListItem>
 			));
 

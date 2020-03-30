@@ -322,6 +322,15 @@ class HomeComponent extends Component {
 	render() {
 		const { classes } = this.props;
 
+		let picturePath;
+		if(this.state.gender === 'Male'){
+			picturePath = 'DefaultProfilePictureMale.jpg'
+		} else if(this.state.gender === 'Female'){
+			picturePath = 'DefaultProfilePictureFemale.jpg'
+		} else {
+			picturePath = 'DefaultProfilePicture.jpg'
+		}
+
 		const EditButton = () => {
 			if (this.state.isTutor) {
 				return (
@@ -483,7 +492,7 @@ class HomeComponent extends Component {
 					<Card className={classes.userBox}>
 						<img
 							className={classes.picture}
-							src={require('../assets/DefaultProfilePicture.jpg')}
+							src={require('../assets/' + picturePath)}
 							alt=''
 						/>
 						<Grid

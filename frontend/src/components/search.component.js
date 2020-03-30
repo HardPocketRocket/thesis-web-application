@@ -56,7 +56,7 @@ const styles = {
 		paddingRight: 16,
 		width: '98%',
 		height: '80%'
-	},
+	}
 };
 
 class SearchComponent extends Component {
@@ -142,22 +142,38 @@ class SearchComponent extends Component {
 				return null;
 			}
 
-			const options = props.results.map(result => (
-				<GridListTile
-					key={result._id}
-					onClick={() => this.onUserClicked(result._id)}
-					cols={1}
-					rows={1}>
-					<img
-						src={require('../assets/DefaultProfilePicture.jpg')}
-						alt='Profile'
-					/>
-					<GridListTileBar
-						title={result.username}
-						subtitle={"Name: " + result.firstName + " " + result.lastName}
-					/>
-				</GridListTile>
-			));
+			const options = props.results.map(result => {
+				let picturePath;
+				if (result.gender === 'Male') {
+					picturePath = 'DefaultProfilePictureMale.jpg';
+				} else if (result.gender === 'Female') {
+					picturePath = 'DefaultProfilePictureFemale.jpg';
+				} else {
+					picturePath = 'DefaultProfilePicture.jpg';
+				}
+
+				return (
+					<GridListTile
+						key={result._id}
+						onClick={() => this.onUserClicked(result._id)}
+						cols={1}
+						rows={1}>
+						<img
+							src={require('../assets/' + picturePath)}
+							alt='Profile'
+						/>
+						<GridListTileBar
+							title={result.username}
+							subtitle={
+								'Name: ' +
+								result.firstName +
+								' ' +
+								result.lastName
+							}
+						/>
+					</GridListTile>
+				);
+			});
 
 			return (
 				<GridList
