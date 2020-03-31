@@ -4,6 +4,10 @@ import axios from 'axios';
 import Card from '@material-ui/core/Card';
 import Select from '@material-ui/core/Select';
 
+import { format } from 'date-fns';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+
 import MenuItem from '@material-ui/core/MenuItem';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,6 +18,11 @@ import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import WcIcon from '@material-ui/icons/Wc';
 import CakeIcon from '@material-ui/icons/Cake';
 import InputLabel from '@material-ui/core/InputLabel';
+
+import {
+	MuiPickersUtilsProvider,
+	KeyboardDatePicker
+} from '@material-ui/pickers';
 
 import {
 	TextField,
@@ -201,6 +210,12 @@ class HomeComponent extends Component {
 			showTutorEditModal: false,
 			newSubject: '',
 			deleteSubject: '',
+
+			username_temp: '',
+			firstName_temp: '',
+			lastName_temp: '',
+			dateOfBirth_temp: '',
+			gender_temp: ''
 		};
 
 		let options = {
@@ -212,6 +227,7 @@ class HomeComponent extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitNewSubject = this.onSubmitNewSubject.bind(this);
 		this.onSubmitDeleteSubject = this.onSubmitDeleteSubject.bind(this);
+		this.onSubmitUpdateProfile = this.onSubmitUpdateProfile.bind(this);
 		this.onChangeQuery = this.onChangeQuery.bind(this);
 		this.onChangeNewSubject = this.onChangeNewSubject.bind(this);
 		this.onChangeDeleteSubject = this.onChangeDeleteSubject.bind(this);
@@ -229,10 +245,9 @@ class HomeComponent extends Component {
 					subjects: res.data.subjects,
 					firstName: res.data.firstName,
 					lastName: res.data.lastName,
-					dateOfBirth: Intl.DateTimeFormat(
-						'en-US',
-						options
-					).format(new Date(res.data.dateOfBirth)),
+					dateOfBirth: Intl.DateTimeFormat('en-US', options).format(
+						new Date(res.data.dateOfBirth)
+					),
 					joinDate: res.data.joinDate,
 					gender: res.data.gender
 				});
@@ -277,6 +292,36 @@ class HomeComponent extends Component {
 		});
 	}
 
+	onChangeFirstName = event => {
+		this.setState({
+			firstName_temp: event.target.value
+		});
+	};
+
+	onChangeLastName = event => {
+		this.setState({
+			lastName_temp: event.target.value
+		});
+	};
+
+	onChangeUsername = event => {
+		this.setState({
+			username_temp: event.target.value
+		});
+	};
+
+	handleDateChange = date => {
+		this.setState({
+			dateOfBirth_temp: format(date, 'MMMM dd, yyyy')
+		});
+	};
+
+	onChangeGender = event => {
+		this.setState({
+			gender_temp: event.target.value
+		});
+	};
+
 	onSubmit(event) {
 		event.preventDefault();
 
@@ -286,20 +331,56 @@ class HomeComponent extends Component {
 	onSubmitNewSubject(event) {
 		event.preventDefault();
 
-		this.setState({
-			subjects: [...this.state.subjects, this.state.newSubject]
-		}, this.updateSubjectsCallback);
+		this.setState(
+			{
+				subjects: [...this.state.subjects, this.state.newSubject]
+			},
+			this.updateSubjectsCallback
+		);
 	}
 
 	onSubmitDeleteSubject(event) {
 		event.preventDefault();
 
-		this.setState({
-			subjects: this.state.subjects.filter(
-				elem => elem !== this.state.deleteSubject
-			)
-		}, this.updateSubjectsCallback);
+		this.setState(
+			{
+				subjects: this.state.subjects.filter(
+					elem => elem !== this.state.deleteSubject
+				)
+			},
+			this.updateSubjectsCallback
+		);
 	}
+
+	onSubmitUpdateProfile(event) {
+		event.preventDefault();
+
+		this.setState(
+			{
+				firstName: this.state.firstName_temp,
+				lastName: this.state.lastName_temp,
+				dateOfBirth: this.state.dateOfBirth_temp,
+				username: this.state.username_temp,
+				gender: this.state.gender_temp
+			},
+			this.updateProfileCallback
+		);
+	}
+
+	updateProfileCallback = () => {
+		axios.patch(
+			'http://localhost:5000/user/' +
+				sessionStorage.getItem('id') +
+				'/profile',
+			{
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
+				gender: this.state.gender,
+				dateOfBirth: this.state.dateOfBirth,
+				username: this.state.username
+			}
+		);
+	};
 
 	updateSubjectsCallback = () => {
 		axios
@@ -307,7 +388,7 @@ class HomeComponent extends Component {
 				'http://localhost:5000/user/' +
 					sessionStorage.getItem('id') +
 					'/subjects',
-				{ subjects: this.state.subjects}
+				{ subjects: this.state.subjects }
 			)
 			.then(res => {
 				console.log(res);
@@ -317,18 +398,18 @@ class HomeComponent extends Component {
 					newSubject: ''
 				});
 			});
-	}
+	};
 
 	render() {
 		const { classes } = this.props;
 
 		let picturePath;
-		if(this.state.gender === 'Male'){
-			picturePath = 'DefaultProfilePictureMale.jpg'
-		} else if(this.state.gender === 'Female'){
-			picturePath = 'DefaultProfilePictureFemale.jpg'
+		if (this.state.gender === 'Male') {
+			picturePath = 'DefaultProfilePictureMale.jpg';
+		} else if (this.state.gender === 'Female') {
+			picturePath = 'DefaultProfilePictureFemale.jpg';
 		} else {
-			picturePath = 'DefaultProfilePicture.jpg'
+			picturePath = 'DefaultProfilePicture.jpg';
 		}
 
 		const EditButton = () => {
@@ -360,6 +441,131 @@ class HomeComponent extends Component {
 								className={classes.modalCloseButton}
 								onClick={this.hideProfileModal}
 								startIcon={<CloseIcon />}></Button>
+							<form
+								className={classes.modalForm}
+								onSubmit={this.onSubmitUpdateProfile}>
+								<TextField
+									className={classes.modalTextField}
+									required
+									autoFocus
+									variant='outlined'
+									label='First Name'
+									type='text'
+									value={this.state.firstName_temp}
+									onChange={this.onChangeFirstName}
+									InputProps={{
+										classes: {
+											root: classes.outlinedRoot,
+											notchedOutline:
+												classes.notchedOutline,
+											focused: classes.focused
+										}
+									}}
+									InputLabelProps={{
+										classes: {
+											root: classes.label,
+											focused: classes.focusedLabel
+										},
+										required: false
+									}}
+								/>
+								<TextField
+									className={classes.modalTextField}
+									required
+									autoFocus
+									variant='outlined'
+									label='Last Name'
+									type='text'
+									value={this.state.lastName_temp}
+									onChange={this.onChangeLastName}
+									InputProps={{
+										classes: {
+											root: classes.outlinedRoot,
+											notchedOutline:
+												classes.notchedOutline,
+											focused: classes.focused
+										}
+									}}
+									InputLabelProps={{
+										classes: {
+											root: classes.label,
+											focused: classes.focusedLabel
+										},
+										required: false
+									}}
+								/>
+								<TextField
+									className={classes.modalTextField}
+									required
+									autoFocus
+									variant='outlined'
+									label='Username'
+									type='text'
+									value={this.state.username_temp}
+									onChange={this.onChangeUsername}
+									InputProps={{
+										classes: {
+											root: classes.outlinedRoot,
+											notchedOutline:
+												classes.notchedOutline,
+											focused: classes.focused
+										}
+									}}
+									InputLabelProps={{
+										classes: {
+											root: classes.label,
+											focused: classes.focusedLabel
+										},
+										required: false
+									}}
+								/>
+								<Grid container className={classes.grid}>
+									<Grid item xs={8}>
+										<MuiPickersUtilsProvider
+											utils={DateFnsUtils}>
+											<KeyboardDatePicker
+												inputVariant='outlined'
+												variant='dialogue'
+												DialogProps={{
+													className: classes.calendar
+												}}
+												className={classes.datePicker}
+												format='MM/dd/yyyy'
+												margin='normal'
+												label='Date of Birth'
+												value={this.state.dateOfBirth_temp}
+												onChange={this.handleDateChange}
+											/>
+										</MuiPickersUtilsProvider>
+									</Grid>
+									<Grid item xs={4}>
+										<Select
+											variant='outlined'
+											className={classes.genderPicker}
+											onChange={this.onChangeGender}
+											value={this.state.gender_temp}>
+											<MenuItem key='Male' value='Male'>
+												Male
+											</MenuItem>
+											<MenuItem
+												key='Female'
+												value='Female'>
+												Female
+											</MenuItem>
+											<MenuItem key='Other' value='Other'>
+												Other
+											</MenuItem>
+										</Select>
+									</Grid>
+								</Grid>
+								<Button
+									className={classes.newSubjectButton}
+									variant='outlined'
+									type='submit'
+									startIcon={<AddBoxIcon />}>
+									Add
+								</Button>
+							</form>
 						</section>
 					</div>
 				);

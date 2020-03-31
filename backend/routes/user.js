@@ -10,11 +10,38 @@ router.route('/:id').get((req, res) => {
 router.route('/:id/subjects').patch((req, res) => {
 	const newSubjects = req.body.subjects;
 
-	console.log(newSubjects);
-
 	User.findByIdAndUpdate(
 		{ _id: req.params.id },
 		{ $set: { subjects: newSubjects } },
+		{ new: true }
+	)
+		.then(user => {
+			res.json(user);
+			console.log(user);
+		})
+		.catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id/profile').patch((req, res) => {
+	const firstName = req.body.firstName;
+	const lastName = req.body.lastName;
+	const gender = req.body.gender;
+	const dateOfBirth = req.body.dateOfBirth;
+	const username = req.body.username;
+
+	console.log(req.body);
+
+	User.findByIdAndUpdate(
+		{ _id: req.params.id },
+		{
+			$set: {
+				firstName: firstName,
+				lastName: lastName,
+				gender: gender,
+				dateOfBirth: dateOfBirth,
+				username: username
+			}
+		},
 		{ new: true }
 	)
 		.then(user => {
