@@ -15,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import EventIcon from '@material-ui/icons/Event';
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import SaveIcon from '@material-ui/icons/Save';
 import WcIcon from '@material-ui/icons/Wc';
 import CakeIcon from '@material-ui/icons/Cake';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -150,7 +151,7 @@ const styles = {
 	},
 	modalText: {
 		marginRight: '30%',
-		marginLeft: '40%',
+		marginLeft: '44%',
 		marginTop: '2%'
 	},
 	newSubjectButton: {
@@ -172,15 +173,22 @@ const styles = {
 		marginRight: '2%'
 	},
 	modalForm: {
-		marginTop: 64
+		marginTop: 56
+	},
+	modalEditForm: {
+		marginTop: 32
 	},
 	modalTextField: {
 		width: '70%',
-		marginLeft: '2%'
+		marginLeft: '3%'
+	},
+	modalEditTextField: {
+		width: '45%',
+		marginLeft: '3%'
 	},
 	modalSelect: {
 		width: '70%',
-		marginLeft: '2%'
+		marginLeft: '3%'
 	},
 	selectLabel: {
 		marginLeft: '2%',
@@ -188,6 +196,33 @@ const styles = {
 	},
 	userInfoGrid: {
 		marginLeft: '20%'
+	},
+	usernameModalTextField: {
+		marginTop: 24,
+		width: '93%',
+		marginLeft: '3%'
+	},
+	grid: {
+		width: '90%',
+		marginLeft: '3%'
+	},
+	dateOfBirthModal: {
+		marginTop: 24,
+		width: '100%'
+	},
+	genderModal: {
+		marginTop: 24,
+		marginLeft: '10%',
+		width: '100%'
+	},
+	editSubmitButton: {
+		marginTop: 24,
+		marginLeft: '40%',
+		background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+		border: 0,
+		color: 'white',
+		width: '20%',
+		height: '56px',
 	}
 };
 
@@ -214,9 +249,11 @@ class HomeComponent extends Component {
 			username_temp: '',
 			firstName_temp: '',
 			lastName_temp: '',
-			dateOfBirth_temp: '',
-			gender_temp: ''
+			dateOfBirth_temp: 'January 01, 2000',
+			gender_temp: 'Male',
 		};
+
+		this.idOfLastChangedElement = '';
 
 		let options = {
 			year: 'numeric',
@@ -259,7 +296,9 @@ class HomeComponent extends Component {
 	};
 
 	hideProfileModal = () => {
-		this.setState({ showProfileEditModal: false });
+		this.setState({
+			showProfileEditModal: false
+		});
 	};
 
 	showTutorModal = () => {
@@ -296,18 +335,21 @@ class HomeComponent extends Component {
 		this.setState({
 			firstName_temp: event.target.value
 		});
+		this.idOfLastChangedElement = 'firstName'
 	};
 
 	onChangeLastName = event => {
 		this.setState({
 			lastName_temp: event.target.value
 		});
+		this.idOfLastChangedElement = 'lastName'
 	};
 
 	onChangeUsername = event => {
 		this.setState({
 			username_temp: event.target.value
 		});
+		this.idOfLastChangedElement = 'username'
 	};
 
 	handleDateChange = date => {
@@ -400,6 +442,12 @@ class HomeComponent extends Component {
 			});
 	};
 
+	componentDidUpdate() {
+		if(this.idOfLastChangedElement !== '' && this.state.showProfileEditModal){
+			document.getElementById(this.idOfLastChangedElement).focus()
+		}
+	  }
+
 	render() {
 		const { classes } = this.props;
 
@@ -442,12 +490,12 @@ class HomeComponent extends Component {
 								onClick={this.hideProfileModal}
 								startIcon={<CloseIcon />}></Button>
 							<form
-								className={classes.modalForm}
+								className={classes.modalEditForm}
 								onSubmit={this.onSubmitUpdateProfile}>
 								<TextField
-									className={classes.modalTextField}
+									id='firstName'
+									className={classes.modalEditTextField}
 									required
-									autoFocus
 									variant='outlined'
 									label='First Name'
 									type='text'
@@ -470,9 +518,10 @@ class HomeComponent extends Component {
 									}}
 								/>
 								<TextField
-									className={classes.modalTextField}
+									id='lastName'
+									className={classes.modalEditTextField}
 									required
-									autoFocus
+									inputRef={this.textInput}
 									variant='outlined'
 									label='Last Name'
 									type='text'
@@ -495,9 +544,9 @@ class HomeComponent extends Component {
 									}}
 								/>
 								<TextField
-									className={classes.modalTextField}
+									id='username'
+									className={classes.usernameModalTextField}
 									required
-									autoFocus
 									variant='outlined'
 									label='Username'
 									type='text'
@@ -529,11 +578,13 @@ class HomeComponent extends Component {
 												DialogProps={{
 													className: classes.calendar
 												}}
-												className={classes.datePicker}
+												className={classes.dateOfBirthModal}
 												format='MM/dd/yyyy'
 												margin='normal'
 												label='Date of Birth'
-												value={this.state.dateOfBirth_temp}
+												value={
+													this.state.dateOfBirth_temp
+												}
 												onChange={this.handleDateChange}
 											/>
 										</MuiPickersUtilsProvider>
@@ -541,7 +592,7 @@ class HomeComponent extends Component {
 									<Grid item xs={4}>
 										<Select
 											variant='outlined'
-											className={classes.genderPicker}
+											className={classes.genderModal}
 											onChange={this.onChangeGender}
 											value={this.state.gender_temp}>
 											<MenuItem key='Male' value='Male'>
@@ -559,11 +610,11 @@ class HomeComponent extends Component {
 									</Grid>
 								</Grid>
 								<Button
-									className={classes.newSubjectButton}
+									className={classes.editSubmitButton}
 									variant='outlined'
 									type='submit'
-									startIcon={<AddBoxIcon />}>
-									Add
+									startIcon={<SaveIcon />}>
+									Save
 								</Button>
 							</form>
 						</section>
