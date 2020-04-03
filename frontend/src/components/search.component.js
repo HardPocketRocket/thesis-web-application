@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { TextField, Button, withStyles, Typography } from '@material-ui/core';
+import { TextField, Button, withStyles, Typography, Grid } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import CloseIcon from '@material-ui/icons/Close';
+import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import EventIcon from '@material-ui/icons/Event';
+import WcIcon from '@material-ui/icons/Wc';
+import CakeIcon from '@material-ui/icons/Cake';
+import DraftsIcon from '@material-ui/icons/Drafts';
 
 const styles = {
 	form: {
@@ -73,7 +79,7 @@ const styles = {
 		position: 'fixed',
 		background: 'white',
 		width: '50%',
-		height: '40%',
+		height: '50%',
 		top: '50%',
 		left: '50%',
 		transform: 'translate(-50%,-50%)'
@@ -90,6 +96,31 @@ const styles = {
 		marginLeft: '44%',
 		marginTop: '2%'
 	},
+	modalPicture: {
+		position: 'fixed',
+		bottom: 76,
+		marginLeft: '5%',
+		width: '42%',
+		height: '70%',
+		borderRadius: 12
+	},
+	grid: {
+		position: 'fixed',
+		top: 108,
+		right: 0,
+		marginLeft: 36,
+		width: '46%'
+	},
+	modalButton: {
+		position: 'fixed',
+		bottom: 76,
+		right: '5%',
+		width: '42%',
+		height: 40,
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white'
+	}
 };
 
 class SearchComponent extends Component {
@@ -99,7 +130,9 @@ class SearchComponent extends Component {
 		this.state = {
 			query: props.match.params.query,
 			searchResults: [],
-			showViewProfileModal: false
+			showViewProfileModal: false,
+			currentlySelectedProfile: '',
+			currentlySelectedPicturePath: 'DefaultProfilePicture.jpg'
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -149,12 +182,20 @@ class SearchComponent extends Component {
 		this.props.history.push('/search/' + this.state.query);
 	}
 
-	showViewProfileModal = () => {
-		this.setState({ showViewProfileModal: true });
+	showViewProfileModal = (currentlySelectedProfile, currentlySelectedPicturePath) => {
+		this.setState({
+			showViewProfileModal: true,
+			currentlySelectedProfile: currentlySelectedProfile,
+			currentlySelectedPicturePath: currentlySelectedPicturePath
+		});
 	};
 
 	hideViewProfileModal = () => {
-		this.setState({ showViewProfileModal: false });
+		this.setState({
+			showViewProfileModal: false,
+			currentlySelectedProfile: '',
+			currentlySelectedPicturePath: 'DefaultProfilePicture.jpg'
+		});
 	};
 
 	componentDidUpdate(prevProps) {
@@ -179,18 +220,84 @@ class SearchComponent extends Component {
 	render() {
 		const { classes } = this.props;
 
+		console.log(this.state.searchResults);
+
 		const ViewProfileModal = () => {
+
+			let profile = this.state.searchResults.find(result => result._id === this.state.currentlySelectedProfile);
+
 			if (this.state.showViewProfileModal) {
 				return (
 					<div className={classes.modal}>
 						<section className={classes.modalMain}>
 							<Typography
 								className={classes.modalText}
-								variant='h6'>View Profile</Typography>
+								variant='h6'>
+								{profile.username + '\'s Profile'}
+							</Typography>
 							<Button
 								className={classes.modalCloseButton}
 								onClick={this.hideViewProfileModal}
 								startIcon={<CloseIcon />}></Button>
+							<img
+							className={classes.modalPicture}
+							src={require('../assets/' + this.state.currentlySelectedPicturePath)}
+							alt='Profile'
+						/>
+						<Grid
+							container
+							spacing={1}
+							alignItems='flex-start'
+							className={classes.grid}>
+							<Grid item xs={1}>
+								<PeopleOutlineRoundedIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Name: ' +
+										profile.firstName +
+										' ' +
+										profile.lastName}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<AssignmentIndIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Username: ' + profile.username}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<WcIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Gender: ' + profile.gender}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<EventIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Join Date: ' + profile.joinDate}
+								</Typography>
+							</Grid>
+							<Grid item xs={1}>
+								<CakeIcon />
+							</Grid>
+							<Grid item xs={11}>
+								<Typography>
+									{'Birthday: ' + profile.dateOfBirth}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Button className={classes.modalButton} startIcon={<DraftsIcon />} onClick={() => this.onUserClicked(profile._id)}>
+									Send a Message
+								</Button>
+							</Grid>
+						</Grid>
 						</section>
 					</div>
 				);
@@ -217,8 +324,7 @@ class SearchComponent extends Component {
 				return (
 					<GridListTile
 						key={result._id}
-						//onClick={() => this.onUserClicked(result._id)}
-						onClick={() => this.showViewProfileModal()}
+						onClick={() => this.showViewProfileModal(result._id, picturePath)}
 						cols={1}
 						rows={1}>
 						<img
