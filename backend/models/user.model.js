@@ -11,7 +11,10 @@ const userSchema = new mongoose.Schema({
     joinDate: { type: String, required: true },
     isTutor: { type: Boolean, required: true },
     subjects: [{ type: String }],
-    mailboxes: [{ type: String}]
+    mailboxes: [{ type: String}],
+    rating: [{type: Number}],
+    ratedBy: [{type: String}],
+    ratingAvg: {type: Number}
 });
 
 const User = mongoose.model("User", userSchema);

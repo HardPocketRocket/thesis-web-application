@@ -55,6 +55,7 @@ socket.on('connection', socket => {
 
 		//for testing, counts the users because they are stored as object attributes
 		console.log(Object.keys(connectedUsers).length);
+		console.log(connectedUsers);
 	});
 
 	socket.on('private', message => {
