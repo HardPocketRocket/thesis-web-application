@@ -128,6 +128,10 @@ const styles = {
 		border: 0,
 		color: 'white',
 	},
+	customRating: {
+		marginLeft: 127,
+		marginTop: 24
+	}
 };
 
 class SearchComponent extends Component {
@@ -257,15 +261,27 @@ class SearchComponent extends Component {
 			if(props.profile.ratedBy.indexOf(sessionStorage.getItem('id')) > -1){
 				return null;
 			} else {
-				return(<Rating
-					value={this.state.rating}
-					name='Rating'
-					onChange={(event) => {
-						this.setState({
-							rating: event.target.value,
-						});
-					}}
-				/>)
+				return(
+					<div className={classes.customRating}>
+						<Grid>
+						<Rating
+							value={this.state.rating}
+							name='Rating'
+							onChange={(event) => {
+								this.setState({
+									rating: event.target.value,
+								});
+							}}/>
+						</Grid>
+						<Grid>
+							<Button
+								onClick={() =>
+									this.submitRating(props.profile._id)}>
+								Submit Rating
+							</Button>
+						</Grid>
+					</div>
+				)
 			}
 		};
 
@@ -354,19 +370,7 @@ class SearchComponent extends Component {
 										precision={0.1}
 									/>
 								</Grid>
-								<Grid>
-									<CustomRating
-										profile={profile}></CustomRating>
-								</Grid>
-								<Grid>
-									<Button
-										onClick={() =>
-											this.submitRating(profile._id)
-										}>
-										Submit Rating
-									</Button>
-								</Grid>
-
+								<CustomRating profile={profile}></CustomRating>
 								<Grid item xs={12}>
 									<Button
 										className={classes.modalButton}
