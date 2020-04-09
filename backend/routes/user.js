@@ -51,33 +51,4 @@ router.route('/:id/profile').patch((req, res) => {
 		.catch((err) => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id/rating').patch((req, res) => {
-	const rating = req.body.rating;
-	const ratedBy = req.body.ratedBy;
-
-	User.findByIdAndUpdate(
-		{ _id: req.params.id },
-		{ $push: { rating: rating, ratedBy: ratedBy } },
-		{ new: true }
-	)
-		.then((user) => {
-			let ratingAvg = 0;
-			for (var i = 0; i < user.rating.length; i++) {
-				ratingAvg += user.rating[i];
-			}
-			let newRatingAvg = ratingAvg / user.rating.length;
-			newRatingAvg = parseFloat(newRatingAvg.toFixed(1))
-
-			User.findByIdAndUpdate(
-				{ _id: req.params.id },
-				{ $set: { ratingAvg: newRatingAvg } },
-				{ new: true }
-			).then((user) => {
-				res.json(user);
-				console.log(user);
-			});
-		})
-		.catch((err) => res.status(400).json('Error: ' + err));
-});
-
 module.exports = router;

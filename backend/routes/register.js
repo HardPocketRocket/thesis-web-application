@@ -12,9 +12,8 @@ router.route('/').post((req, res) => {
 	const gender = req.body.gender;
 	const subjects = req.body.subjects;
 	const mailboxes = [];
-	const rating = [];
+	const ratings = [];
 	const ratingAvg = 0.0;
-	const ratedBy = [];
 
 	const newUser = new User({
 		username,
@@ -27,9 +26,8 @@ router.route('/').post((req, res) => {
 		gender,
 		subjects,
 		mailboxes,
-		rating,
-		ratingAvg,
-		ratedBy,
+		ratings,
+		ratingAvg
 	});
 
 	newUser

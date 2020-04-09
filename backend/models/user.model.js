@@ -12,8 +12,7 @@ const userSchema = new mongoose.Schema({
     isTutor: { type: Boolean, required: true },
     subjects: [{ type: String }],
     mailboxes: [{ type: String}],
-    rating: [{type: Number}],
-    ratedBy: [{type: String}],
+    ratings: [{type: String}],
     ratingAvg: {type: Number}
 });
 

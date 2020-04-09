@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import {
-	TextField,
-	Button,
-	withStyles,
-	Typography,
-	Grid,
-} from '@material-ui/core';
+import { TextField, Button, withStyles, Typography, Grid } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -130,8 +124,8 @@ const styles = {
 	},
 	customRating: {
 		marginLeft: 127,
-		marginTop: 24
-	}
+		marginTop: 24,
+	},
 };
 
 class SearchComponent extends Component {
@@ -144,20 +138,19 @@ class SearchComponent extends Component {
 			showViewProfileModal: false,
 			currentlySelectedProfile: '',
 			currentlySelectedPicturePath: 'DefaultProfilePicture.jpg',
-			rating: 0.0,
+			rating: null,
+			ratingVal: 0.0,
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onChangeQuery = this.onChangeQuery.bind(this);
 		this.onUserClicked = this.onUserClicked.bind(this);
 
-		axios
-			.get('http://localhost:5000/search/' + this.state.query)
-			.then((res) => {
-				this.setState({
-					searchResults: res.data,
-				});
+		axios.get('http://localhost:5000/search/' + this.state.query).then((res) => {
+			this.setState({
+				searchResults: res.data,
 			});
+		});
 	}
 
 	onChangeQuery(event) {
@@ -168,20 +161,12 @@ class SearchComponent extends Component {
 
 	onUserClicked(userId) {
 		axios
-			.get(
-				'http://localhost:5000/mailbox/' +
-					sessionStorage.getItem('id') +
-					'/' +
-					userId
-			)
+			.get('http://localhost:5000/mailbox/' + sessionStorage.getItem('id') + '/' + userId)
 			.then((res) => {
 				if (res.data === null) {
 					axios
 						.post('http://localhost:5000/mailbox/', {
-							participants: [
-								sessionStorage.getItem('id'),
-								userId,
-							],
+							participants: [sessionStorage.getItem('id'), userId],
 						})
 						.then((res) => {
 							this.props.history.push('/message/' + res.data);
@@ -197,15 +182,14 @@ class SearchComponent extends Component {
 		this.props.history.push('/search/' + this.state.query);
 	}
 
-	showViewProfileModal = (
-		currentlySelectedProfile,
-		currentlySelectedPicturePath
-	) => {
+	showViewProfileModal = (currentlySelectedProfile, currentlySelectedPicturePath) => {
 		this.setState({
 			showViewProfileModal: true,
 			currentlySelectedProfile: currentlySelectedProfile,
 			currentlySelectedPicturePath: currentlySelectedPicturePath,
 		});
+
+		this.retrieveRating(currentlySelectedProfile);
 	};
 
 	hideViewProfileModal = () => {
@@ -223,10 +207,7 @@ class SearchComponent extends Component {
 			});
 
 			axios
-				.get(
-					'http://localhost:5000/search/' +
-						this.props.match.params.query
-				)
+				.get('http://localhost:5000/search/' + this.props.match.params.query)
 				.then((res) => {
 					this.setState({
 						searchResults: res.data,
@@ -235,53 +216,116 @@ class SearchComponent extends Component {
 		}
 	}
 
-	submitRating = (memberId) => {
-		console.log('sdafadsf');
-
+	retrieveRating = (currentlySelectedProfile) => {
 		axios
-			.patch('http://localhost:5000/user/' + memberId + '/rating', {
-				ratedBy: sessionStorage.getItem('id'),
-				rating: this.state.rating,
+			.get(
+				'http://localhost:5000/rating/' +
+					currentlySelectedProfile +
+					'/' +
+					sessionStorage.getItem('id')
+			)
+			.then((rating) => {
+				if(rating.data !== null){
+					this.setState({
+						rating: rating.data,
+						ratingVal: rating.data.value,
+					});
+				}
+			});
+	};
+
+	submitRating = (memberId) => {
+		axios
+			.post('http://localhost:5000/rating/', {
+				to: memberId,
+				from: sessionStorage.getItem('id'),
+				value: this.state.ratingVal,
 			})
 			.then((res) => {
 				let newSearchResults = this.state.searchResults.filter(
 					(elem) => elem._id !== res.data._id
 				);
-				this.setState({
-					searchResults: [...newSearchResults, res.data],
-				});
+
+				this.setState(
+					{
+						searchResults: [...newSearchResults, res.data],
+					},
+					this.retrieveRating(res.data._id)
+				);
 			});
+	};
+
+	updateRating = (ratingId, memberId) => {
+		axios.delete('http://localhost:5000/rating/' + ratingId + '/' + memberId).then(
+			axios
+				.post('http://localhost:5000/rating/', {
+					to: memberId,
+					from: sessionStorage.getItem('id'),
+					value: this.state.rating.value,
+				})
+				.then((res) => {
+					let newSearchResults = this.state.searchResults.filter(
+						(elem) => elem._id !== res.data._id
+					);
+					this.setState(
+						{
+							searchResults: [...newSearchResults, res.data],
+						},
+						this.retrieveRating(res.data._id)
+					);
+				})
+		);
 	};
 
 	render() {
 		const { classes } = this.props;
 
 		const CustomRating = (props) => {
-			console.log(props);
-			if(props.profile.ratedBy.indexOf(sessionStorage.getItem('id')) > -1){
-				return null;
-			} else {
-				return(
+			if (this.state.rating !== null) {
+				return (
 					<div className={classes.customRating}>
 						<Grid>
-						<Rating
-							value={this.state.rating}
-							name='Rating'
-							onChange={(event) => {
-								this.setState({
-									rating: event.target.value,
-								});
-							}}/>
+							<Rating
+								value={this.state.rating.value}
+								name='Rating'
+								onChange={(event) => {
+									this.setState({
+										rating: { ...this.state.rating, value: event.target.value },
+									});
+								}}
+							/>
 						</Grid>
 						<Grid>
 							<Button
 								onClick={() =>
-									this.submitRating(props.profile._id)}>
+									this.updateRating(this.state.rating._id, props.profile._id)
+								}>
+								Update Rating
+							</Button>
+						</Grid>
+					</div>
+				);
+			} else {
+				return (
+					<div className={classes.customRating}>
+						<Grid>
+							<Rating
+								value={this.state.ratingVal}
+								name='Rating'
+								onChange={(event) => {
+									this.setState({
+										ratingVal: event.target.value,
+									});
+								}}
+							/>
+						</Grid>
+						<Grid>
+							<Button onClick={() => this.submitRating(props.profile._id)}>
 								Submit Rating
 							</Button>
 						</Grid>
 					</div>
-				)
+				);
 			}
 		};
 
@@ -294,9 +338,7 @@ class SearchComponent extends Component {
 				return (
 					<div className={classes.modal}>
 						<section className={classes.modalMain}>
-							<Typography
-								className={classes.modalText}
-								variant='h6'>
+							<Typography className={classes.modalText} variant='h6'>
 								{profile.username + "'s Profile"}
 							</Typography>
 							<Button
@@ -319,43 +361,32 @@ class SearchComponent extends Component {
 								</Grid>
 								<Grid item xs={11}>
 									<Typography>
-										{'Name: ' +
-											profile.firstName +
-											' ' +
-											profile.lastName}
+										{'Name: ' + profile.firstName + ' ' + profile.lastName}
 									</Typography>
 								</Grid>
 								<Grid item xs={1}>
 									<AssignmentIndIcon />
 								</Grid>
 								<Grid item xs={11}>
-									<Typography>
-										{'Username: ' + profile.username}
-									</Typography>
+									<Typography>{'Username: ' + profile.username}</Typography>
 								</Grid>
 								<Grid item xs={1}>
 									<WcIcon />
 								</Grid>
 								<Grid item xs={11}>
-									<Typography>
-										{'Gender: ' + profile.gender}
-									</Typography>
+									<Typography>{'Gender: ' + profile.gender}</Typography>
 								</Grid>
 								<Grid item xs={1}>
 									<EventIcon />
 								</Grid>
 								<Grid item xs={11}>
-									<Typography>
-										{'Join Date: ' + profile.joinDate}
-									</Typography>
+									<Typography>{'Join Date: ' + profile.joinDate}</Typography>
 								</Grid>
 								<Grid item xs={1}>
 									<CakeIcon />
 								</Grid>
 								<Grid item xs={11}>
-									<Typography>
-										{'Birthday: ' + profile.dateOfBirth}
-									</Typography>
+									<Typography>{'Birthday: ' + profile.dateOfBirth}</Typography>
 								</Grid>
 								<Grid item xs={1}>
 									<StarIcon />
@@ -364,20 +395,14 @@ class SearchComponent extends Component {
 									<Typography>Rating:</Typography>
 								</Grid>
 								<Grid item xs={9}>
-									<Rating
-										readOnly
-										value={profile.ratingAvg}
-										precision={0.1}
-									/>
+									<Rating readOnly value={profile.ratingAvg} precision={0.1} />
 								</Grid>
 								<CustomRating profile={profile}></CustomRating>
 								<Grid item xs={12}>
 									<Button
 										className={classes.modalButton}
 										startIcon={<DraftsIcon />}
-										onClick={() =>
-											this.onUserClicked(profile._id)
-										}>
+										onClick={() => this.onUserClicked(profile._id)}>
 										Send a Message
 									</Button>
 								</Grid>
@@ -408,34 +433,20 @@ class SearchComponent extends Component {
 				return (
 					<GridListTile
 						key={result._id}
-						onClick={() =>
-							this.showViewProfileModal(result._id, picturePath)
-						}
+						onClick={() => this.showViewProfileModal(result._id, picturePath)}
 						cols={1}
 						rows={1}>
-						<img
-							src={require('../assets/' + picturePath)}
-							alt='Profile'
-						/>
+						<img src={require('../assets/' + picturePath)} alt='Profile' />
 						<GridListTileBar
 							title={result.username}
-							subtitle={
-								'Name: ' +
-								result.firstName +
-								' ' +
-								result.lastName
-							}
+							subtitle={'Name: ' + result.firstName + ' ' + result.lastName}
 						/>
 					</GridListTile>
 				);
 			});
 
 			return (
-				<GridList
-					cols={4}
-					cellHeight={252}
-					spacing={16}
-					className={classes.gridList}>
+				<GridList cols={4} cellHeight={252} spacing={16} className={classes.gridList}>
 					{options}
 				</GridList>
 			);
@@ -476,8 +487,7 @@ class SearchComponent extends Component {
 					</Button>
 				</form>
 				<Results results={this.state.searchResults} />
-				<ViewProfileModal
-					show={this.state.showViewProfileModal}></ViewProfileModal>
+				<ViewProfileModal show={this.state.showViewProfileModal}></ViewProfileModal>
 			</div>
 		);
 	}
