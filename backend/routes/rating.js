@@ -43,13 +43,6 @@ router.route('/:idTo/:idFrom').get((req, res) => {
 	});
 });
 
-// router.route('/:id/:idTo').delete((req, res) => {
-// 	User.findByIdAndUpdate(
-// 		{ _id: req.params.idTo },
-// 		{ $pull: { ratings: req.params.id } },
-// 		{ new: true }
-// 	)
-// });
 
 router.route('/:id/:idTo').delete((req, res) => {
 	User.findByIdAndUpdate(
@@ -60,7 +53,6 @@ router.route('/:id/:idTo').delete((req, res) => {
 		Rating.findByIdAndDelete({ _id: req.params.id }).then(
 			Rating.find({ to: req.params.idTo }).exec().then((ratings) => {
 				if (ratings === []) {
-					console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ratings);
 	
 					User.findByIdAndUpdate(
 						{ _id: user._id },
@@ -70,7 +62,6 @@ router.route('/:id/:idTo').delete((req, res) => {
 						res.json(user);
 					});
 				} else {
-					console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', ratings);
 	
 					let ratingAvg = 0;
 					for (let i = 0; i < ratings.length; i++) {

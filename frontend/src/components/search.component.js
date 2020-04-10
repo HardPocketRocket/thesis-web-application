@@ -225,7 +225,7 @@ class SearchComponent extends Component {
 					sessionStorage.getItem('id')
 			)
 			.then((rating) => {
-				if(rating.data !== null){
+				if (rating.data !== null) {
 					this.setState({
 						rating: rating.data,
 						ratingVal: rating.data.value,
