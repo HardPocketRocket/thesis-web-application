@@ -29,44 +29,11 @@ import {
 	AppointmentTooltip,
 	AppointmentForm,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import { ViewState, EditingState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 import { TextField, Button, withStyles, Box, Typography, Grid } from '@material-ui/core';
-
-const testData = [
-	{
-		id: 0,
-		title: 'Watercolor Landscape',
-		startDate: new Date(2020, 3, 6, 9, 30),
-		endDate: new Date(2020, 3, 6, 11, 30),
-	},
-	{
-		id: 1,
-		title: 'Monthly Planning',
-		startDate: new Date(2020, 3, 7, 9, 30),
-		endDate: new Date(2020, 3, 7, 11, 30),
-	},
-	{
-		id: 2,
-		title: 'Recruiting students',
-		startDate: new Date(2020, 3, 8, 12, 0),
-		endDate: new Date(2020, 3, 8, 13, 0),
-	},
-	{
-		id: 3,
-		title: 'Oil Painting',
-		startDate: new Date(2020, 3, 9, 14, 30),
-		endDate: new Date(2020, 3, 9, 15, 30),
-	},
-	{
-		id: 4,
-		title: 'Open Day',
-		startDate: new Date(2020, 3, 10, 12, 0),
-		endDate: new Date(2020, 3, 10, 13, 35),
-	},
-];
 
 const styles = {
 	form: {
@@ -114,6 +81,7 @@ const styles = {
 		background: 'white',
 		display: 'flex',
 		marginLeft: '1%',
+		zIndex: 0
 	},
 	schedule: {},
 	userBoxButton: {
@@ -301,7 +269,7 @@ class HomeComponent extends Component {
 			newSubject: '',
 			deleteSubject: '',
 
-			data: testData,
+			data: [],
 
 			username_temp: '',
 			firstName_temp: '',
@@ -329,7 +297,6 @@ class HomeComponent extends Component {
 		this.commitChanges = this.commitChanges.bind(this);
 
 		axios.get('http://localhost:5000/home/' + props.match.params.id).then((res) => {
-			console.log(res);
 
 			this.setState({
 				username: res.data.username,
@@ -345,6 +312,14 @@ class HomeComponent extends Component {
 				gender: res.data.gender,
 			});
 		});
+
+		axios.get('http://localhost:5000/appointment/' + props.match.params.id).then(res => {
+			console.log(res);
+
+			this.setState({
+				data: res.data
+			})
+		})
 	}
 
 	showProfileModal = () => {
@@ -495,21 +470,28 @@ class HomeComponent extends Component {
 	}
 
 	commitChanges({ added, changed, deleted }) {
+	
 		this.setState((state) => {
 			let { data } = state;
-			if (added) {
-				const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-				data = [...data, { id: startingAddedId, ...added }];
-			}
 			if (changed) {
+				console.log(changed);
+				
 				data = data.map((appointment) =>
 					changed[appointment.id]
 						? { ...appointment, ...changed[appointment.id] }
 						: appointment
 				);
+
+				let changedAppointment = data.filter((appointment) => appointment.id === Object.keys(changed)[0]);
+				axios.patch('http://localhost:5000/appointment/' + Object.keys(changed)[0], {appointment: changedAppointment[0]}).then(result => {
+					console.log(result);
+				})
 			}
 			if (deleted !== undefined) {
+				console.log(deleted);
+				
 				data = data.filter((appointment) => appointment.id !== deleted);
+				axios.delete('http://localhost:5000/appointment/' + deleted);
 			}
 			return { data };
 		});
@@ -518,8 +500,6 @@ class HomeComponent extends Component {
 	render() {
 		const { classes } = this.props;
 		const { data } = this.state;
-
-		console.log(data);
 
 		let picturePath;
 		if (this.state.gender === 'Male') {
@@ -864,7 +844,7 @@ class HomeComponent extends Component {
 								<Toolbar />
 								<DateNavigator />
 								<EditingState onCommitChanges={this.commitChanges} />
-								<WeekView startDayHour={0} endDayHour={24} />
+								<WeekView startDayHour={0} endDayHour={24}/>
 								<IntegratedEditing />
 								<Appointments appointmentComponent={Appointment} />
 								<AppointmentTooltip showCloseButton showOpenButton showDeleteButton/>

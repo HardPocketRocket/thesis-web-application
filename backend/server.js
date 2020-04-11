@@ -36,6 +36,7 @@ const mailboxRouter = require('./routes/mailbox');
 const messageRouter = require('./routes/message');
 const userRouter = require('./routes/user');
 const ratingRouter = require('./routes/rating');
+const appointmentRouter = require('./routes/appointment')
 
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
@@ -45,6 +46,7 @@ app.use('/mailbox', mailboxRouter);
 app.use('/message', messageRouter);
 app.use('/user', userRouter);
 app.use('/rating', ratingRouter);
+app.use('/appointment', appointmentRouter);
 
 socket.on('connection', socket => {
 	socket.on('disconnect', () => {

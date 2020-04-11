@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const timeSlotSchema = new mongoose.Schema({
+const appointmentSchema = new mongoose.Schema({
 	id: mongoose.Schema.Types.ObjectId,
 	participants: [{ type: String }],
 	title: { type: String },
@@ -8,6 +8,6 @@ const timeSlotSchema = new mongoose.Schema({
 	endDate: { type: String },
 });
 
-const TimeSlot = mongoose.model('TimeSlot', timeSlotSchema);
+const Appointment = mongoose.model('Appointment', appointmentSchema);
 
-module.exports = TimeSlot;
+module.exports = Appointment;
