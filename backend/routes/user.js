@@ -7,6 +7,12 @@ router.route('/:id').get((req, res) => {
 		.catch((err) => res.status(400).json('Error: ' + err));
 });
 
+router.route('/:id/name').get((req, res) => {
+	User.findOne({ _id: req.params.id })
+		.then((data) => res.json({firstName: data.firstName, lastName: data.lastName, username: data.username}))
+		.catch((err) => res.status(400).json('Error: ' + err));
+});
+
 router.route('/:id/subjects').patch((req, res) => {
 	const newSubjects = req.body.subjects;
 
