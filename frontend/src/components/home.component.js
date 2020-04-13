@@ -510,6 +510,26 @@ class HomeComponent extends Component {
 			picturePath = 'DefaultProfilePicture.jpg';
 		}
 
+		const messages = {
+			moreInformationLabel: '',
+		};
+
+		const TextEditor = (props) => {
+			console.log(props);
+
+			if (props.type === 'multilineTextEditor') {
+			  return null;
+			} return <AppointmentForm.TextEditor {...props} />;
+		};
+
+		const BooleanEditor = (props) => {
+			console.log(props);
+
+			if (props.label === 'All Day' || props.label === 'Repeat') {
+			  return null;
+			} return <AppointmentForm.BooleanEditor {...props} />;
+		};
+
 		const EditButton = () => {
 			if (this.state.isTutor) {
 				return (
@@ -848,7 +868,7 @@ class HomeComponent extends Component {
 								<IntegratedEditing />
 								<Appointments appointmentComponent={Appointment} />
 								<AppointmentTooltip showCloseButton showOpenButton showDeleteButton/>
-								<AppointmentForm/>
+								<AppointmentForm textEditorComponent={TextEditor} booleanEditorComponent={BooleanEditor} messages={messages}/>
 							</Scheduler>
 						</Box>
 					</Box>

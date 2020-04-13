@@ -33,7 +33,12 @@ router.route('/').post((req, res) => {
 	const startDate = req.body.startDate;
 	const endDate = req.body.endDate;
 
+	console.log(startDate, endDate);
+
 	const newAppointment = new Appointment({ participants, title, startDate, endDate });
+
+	console.log(newAppointment);
+	
 
 	newAppointment
 		.save()

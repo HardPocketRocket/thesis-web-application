@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { withStyles, Box, Typography, TextField, Button } from '@material-ui/core';
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+
+import { withStyles, Box, Typography, TextField, Button, Grid } from '@material-ui/core';
+
+import CloseIcon from '@material-ui/icons/Close';
 
 const socket = require('socket.io-client');
 let socketClient;
@@ -115,6 +122,41 @@ const styles = {
 		border: 0,
 		color: 'white',
 	},
+	modal: {
+		position: 'fixed',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		background: 'rgba(0, 0, 0, 0.6)',
+		display: 'block',
+	},
+	modalMain: {
+		borderRadius: 12,
+		position: 'fixed',
+		background: 'white',
+		width: '50%',
+		height: '40%',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%,-50%)',
+	},
+	modalCloseButton: {
+		position: 'fixed',
+		top: 10,
+		right: 8,
+		height: '8%',
+		width: '8%',
+	},
+	modalText: {
+		marginRight: '30%',
+		marginLeft: '44%',
+		marginTop: '2%',
+	},
+	modalTextField: {
+		width: '70%',
+		marginLeft: '3%',
+	},
 };
 
 class MessageComponent extends Component {
@@ -131,6 +173,11 @@ class MessageComponent extends Component {
 			receiverFirstName: '',
 			receiverLastName: '',
 			receiverUsername: '',
+
+			showAppointmentModal: false,
+			appointmentTitle: '',
+			selectedFromDate: new Date(),
+			selectedToDate: new Date(),
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -186,6 +233,18 @@ class MessageComponent extends Component {
 		return receiver;
 	}
 
+	handleFromDateChange = (date) => {
+		this.setState({
+			selectedFromDate: date,
+		});
+	};
+
+	handleToDateChange = (date) => {
+		this.setState({
+			selectedToDate: date,
+		});
+	};
+
 	onChangeMessage(event) {
 		window.scrollTo(450, 2000);
 
@@ -194,8 +253,34 @@ class MessageComponent extends Component {
 		});
 	}
 
+	onChangeAppointmentTitle = (event) => {
+		this.setState({
+			appointmentTitle: event.target.value
+		})
+	}
+
 	onHomeClicked = (event) => {
 		this.props.history.push('/home/' + sessionStorage.getItem('id'));
+	};
+
+	showAppointmentModal = () => {
+		this.setState({ showAppointmentModal: true });
+	};
+
+	hideAppointmentModal = () => {
+		this.setState({ showAppointmentModal: false });
+	};
+
+	onSubmitAppointment = () => {
+		console.log(this.state.selectedToDate, this.state.selectedFromDate);
+		
+
+		axios.post('http://localhost:5000/appointment/', {
+			participants: [this.state.sender, this.state.receiver],
+			title: this.state.appointmentTitle,
+			startDate: this.state.selectedFromDate.toString(),
+			endDate: this.state.selectedToDate.toString()
+		});
 	}
 
 	onSubmit(event) {
@@ -265,14 +350,87 @@ class MessageComponent extends Component {
 			);
 		};
 
+		const AppointmentModal = () => {
+			if (this.state.showAppointmentModal) {
+				return (
+					<div className={classes.modal}>
+						<section className={classes.modalMain}>
+							<Typography className={classes.modalText} variant='h6'>
+								New Appointment
+							</Typography>
+							<Button
+								className={classes.modalCloseButton}
+								onClick={this.hideAppointmentModal}
+								startIcon={<CloseIcon />}></Button>
+							<Grid container className={classes.grid}>
+							<TextField
+									className={classes.modalTextField}
+									required
+									autoFocus
+									variant='outlined'
+									label='Appointment Title'
+									type='text'
+									value={this.state.appointmentTitle}
+									onChange={this.onChangeAppointmentTitle}
+									InputProps={{
+										classes: {
+											root: classes.outlinedRoot,
+											notchedOutline: classes.notchedOutline,
+											focused: classes.focused,
+										},
+									}}
+									InputLabelProps={{
+										classes: {
+											root: classes.label,
+											focused: classes.focusedLabel,
+										},
+										required: false,
+									}}
+								/>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={DateFnsUtils}>
+										<DateTimePicker
+											label='From'
+											inputVariant='outlined'
+											value={this.state.selectedFromDate}
+											onChange={this.handleFromDateChange}
+										/>
+									</MuiPickersUtilsProvider>
+								</Grid>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={DateFnsUtils}>
+										<DateTimePicker
+											label='To'
+											inputVariant='outlined'
+											value={this.state.selectedToDate}
+											onChange={this.handleToDateChange}
+										/>
+									</MuiPickersUtilsProvider>
+								</Grid>
+							</Grid>
+							<Button onClick={this.onSubmitAppointment}>Submit</Button>
+						</section>
+					</div>
+				);
+			} else {
+				return null;
+			}
+		};
+
 		return (
 			<div>
 				<Box className={classes.topBar}>
-					<Button className={classes.topBarHomeButton} onClick={this.onHomeClicked}> Home</Button>
+					<Button className={classes.topBarHomeButton} onClick={this.onHomeClicked}>
+						{' '}
+						Home
+					</Button>
 					<Typography className={classes.topBarText}>
 						{this.state.receiverUsername}
 					</Typography>
-					<Button className={classes.topBarButton}> Schedule an Appointment</Button>
+					<Button className={classes.topBarButton} onClick={this.showAppointmentModal}>
+						{' '}
+						Schedule an Appointment
+					</Button>
 				</Box>
 				<Messages messages={this.state.messageList} />
 				<form onSubmit={this.onSubmit}>
@@ -310,6 +468,7 @@ class MessageComponent extends Component {
 						</Button>
 					</Box>
 				</form>
+				<AppointmentModal></AppointmentModal>
 			</div>
 		);
 	}
