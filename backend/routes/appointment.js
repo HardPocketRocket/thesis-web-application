@@ -61,35 +61,36 @@ const testData = [
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
 		title: 'Watercolor Landscape',
-		startDate: new Date(2020, 3, 6, 9, 30),
-		endDate: new Date(2020, 3, 6, 11, 30),
+		startDate: new Date(2020, 3, 13, 9, 30),
+		endDate: new Date(2020, 3, 13, 11, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
 		title: 'Monthly Planning',
-		startDate: new Date(2020, 3, 7, 9, 30),
-		endDate: new Date(2020, 3, 7, 11, 30),
+		startDate: new Date(2020, 3, 14, 9, 30),
+		endDate: new Date(2020, 3, 14, 11, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
 		title: 'Recruiting students',
-		startDate: new Date(2020, 3, 8, 12, 0),
-		endDate: new Date(2020, 3, 8, 13, 0),
+		startDate: new Date(2020, 3, 15, 12, 0),
+		endDate: new Date(2020, 3, 15, 13, 0),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
 		title: 'Oil Painting',
-		startDate: new Date(2020, 3, 9, 14, 30),
-		endDate: new Date(2020, 3, 9, 15, 30),
+		startDate: new Date(2020, 3, 16, 14, 30),
+		endDate: new Date(2020, 3, 16, 15, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
 		title: 'Open Day',
-		startDate: new Date(2020, 3, 10, 12, 0),
-		endDate: new Date(2020, 3, 10, 13, 35),
+		startDate: new Date(2020, 3, 17, 12, 0),
+		endDate: new Date(2020, 3, 17, 13, 35),
 	},
 ];
 
+//Insert Test Data
 // testData.forEach((element) => {
 // 	new Appointment(element).save();
 // });

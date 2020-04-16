@@ -40,7 +40,7 @@ const styles = {
 	receivedMessage: {
 		flex: '0 0 auto',
 		marginTop: 16,
-		marginLeft: 16,
+		marginLeft: 20,
 		borderRadius: '12px',
 		maxWidth: '40%',
 		minHeight: '32px',
@@ -108,7 +108,7 @@ const styles = {
 	},
 	topBarButton: {
 		position: 'fixed',
-		top: 10,
+		top: 8,
 		right: 16,
 		background: 'linear-gradient(45deg, #ff5e81 30%, #FF8E53 90%)',
 		border: 0,
@@ -116,7 +116,7 @@ const styles = {
 	},
 	topBarHomeButton: {
 		position: 'fixed',
-		top: 10,
+		top: 8,
 		left: 16,
 		background: 'linear-gradient(45deg, #ff5e81 30%, #FF8E53 90%)',
 		border: 0,
@@ -135,8 +135,8 @@ const styles = {
 		borderRadius: 12,
 		position: 'fixed',
 		background: 'white',
-		width: '50%',
-		height: '40%',
+		width: '30%',
+		height: '30%',
 		top: '50%',
 		left: '50%',
 		transform: 'translate(-50%,-50%)',
@@ -150,12 +150,39 @@ const styles = {
 	},
 	modalText: {
 		marginRight: '30%',
-		marginLeft: '44%',
+		marginLeft: '40%',
 		marginTop: '2%',
 	},
 	modalTextField: {
-		width: '70%',
-		marginLeft: '3%',
+		width: '100%',
+	},
+	grid: {
+		width: '92%',
+		marginLeft: '4%',
+		marginRight: '3%',
+		marginTop: 24,
+		display: 'flex',
+		flexDirection: 'row',
+	},
+	fromDate: {
+		width: '96%',
+		marginTop: 24,
+	},
+	toDate: {
+		width: '96%',
+		marginTop: 24,
+		marginLeft: '4%'
+	},
+	submitAppointmentButton: {
+		background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+		border: 0,
+		color: 'white',
+		height: 40,
+		width: '92%',
+		marginTop: '8%',
+		marginBottom: 16,
+		marginLeft: '4%',
+		marginRight: '3%',
 	},
 };
 
@@ -274,13 +301,20 @@ class MessageComponent extends Component {
 	onSubmitAppointment = () => {
 		console.log(this.state.selectedToDate, this.state.selectedFromDate);
 		
-
 		axios.post('http://localhost:5000/appointment/', {
 			participants: [this.state.sender, this.state.receiver],
 			title: this.state.appointmentTitle,
 			startDate: this.state.selectedFromDate.toString(),
 			endDate: this.state.selectedToDate.toString()
 		});
+
+		this.setState({
+			appointmentTitle: '',
+			selectedFromDate: new Date(),
+			selectedToDate: new Date(),
+		})
+
+		this.hideAppointmentModal();
 	}
 
 	onSubmit(event) {
@@ -390,6 +424,7 @@ class MessageComponent extends Component {
 								<Grid item xs={6}>
 									<MuiPickersUtilsProvider utils={DateFnsUtils}>
 										<DateTimePicker
+											className={classes.fromDate}
 											label='From'
 											inputVariant='outlined'
 											value={this.state.selectedFromDate}
@@ -400,6 +435,7 @@ class MessageComponent extends Component {
 								<Grid item xs={6}>
 									<MuiPickersUtilsProvider utils={DateFnsUtils}>
 										<DateTimePicker
+											className={classes.toDate}
 											label='To'
 											inputVariant='outlined'
 											value={this.state.selectedToDate}
@@ -408,7 +444,7 @@ class MessageComponent extends Component {
 									</MuiPickersUtilsProvider>
 								</Grid>
 							</Grid>
-							<Button onClick={this.onSubmitAppointment}>Submit</Button>
+							<Button className={classes.submitAppointmentButton} onClick={this.onSubmitAppointment}>Submit</Button>
 						</section>
 					</div>
 				);
