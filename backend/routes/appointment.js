@@ -60,31 +60,31 @@ router.route('/:id').delete((req, res) => {
 const testData = [
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
-		title: 'Watercolor Landscape',
+		title: 'Math with Michael',
 		startDate: new Date(2020, 3, 13, 9, 30),
 		endDate: new Date(2020, 3, 13, 11, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
-		title: 'Monthly Planning',
+		title: 'Math with Arthur',
 		startDate: new Date(2020, 3, 14, 9, 30),
 		endDate: new Date(2020, 3, 14, 11, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
-		title: 'Recruiting students',
+		title: 'Math with Anna',
 		startDate: new Date(2020, 3, 15, 12, 0),
 		endDate: new Date(2020, 3, 15, 13, 0),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
-		title: 'Oil Painting',
+		title: 'Math with Nick',
 		startDate: new Date(2020, 3, 16, 14, 30),
 		endDate: new Date(2020, 3, 16, 15, 30),
 	},
 	{
 		participants: ['5e8f27e4122ae024bc3bee2f', '5e8f27f6122ae024bc3bee30'],
-		title: 'Open Day',
+		title: 'Math with Katy',
 		startDate: new Date(2020, 3, 17, 12, 0),
 		endDate: new Date(2020, 3, 17, 13, 35),
 	},

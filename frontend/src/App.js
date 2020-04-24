@@ -12,7 +12,7 @@ class App extends Component {
 	render() {
 		return (
 			<Router>
-				{/* <Redirect exact from='' to='/register' /> */}
+				<Redirect exact from='' to='/register' />
 				<Route path='/login' exact component={LoginComponent} />
 				<Route path='/register' exact component={RegisterComponent} />
 				<Route path='/home/:id' exact component={HomeComponent} />

@@ -242,8 +242,8 @@ const Appointment = ({ children, style, ...restProps }) => (
 		{...restProps}
 		style={{
 			...style,
-			backgroundColor: '#FFC107',
-			borderRadius: '8px',
+			backgroundColor: '#b96eff',
+			borderRadius: '6px',
 		}}>
 		{children}
 	</Appointments.Appointment>
@@ -280,12 +280,6 @@ class HomeComponent extends Component {
 
 		this.idOfLastChangedElement = '';
 
-		let options = {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-		};
-
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitNewSubject = this.onSubmitNewSubject.bind(this);
 		this.onSubmitDeleteSubject = this.onSubmitDeleteSubject.bind(this);
@@ -295,6 +289,12 @@ class HomeComponent extends Component {
 		this.onChangeDeleteSubject = this.onChangeDeleteSubject.bind(this);
 		this.onMailboxClicked = this.onMailboxClicked.bind(this);
 		this.commitChanges = this.commitChanges.bind(this);
+
+		let options = {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		};
 
 		axios.get('http://localhost:5000/home/' + props.match.params.id).then((res) => {
 
@@ -469,7 +469,7 @@ class HomeComponent extends Component {
 		}
 	}
 
-	commitChanges({ added, changed, deleted }) {
+	commitChanges({changed, deleted }) {
 	
 		this.setState((state) => {
 			let { data } = state;
@@ -873,8 +873,8 @@ class HomeComponent extends Component {
 						</Box>
 					</Box>
 				</Box>
-				<ProfileModal show={this.state.showProfileEditModal}></ProfileModal>
-				<TutorModal show={this.state.showTutorEditModal}></TutorModal>
+				<ProfileModal></ProfileModal>
+				<TutorModal></TutorModal>
 			</div>
 		);
 	}
