@@ -215,10 +215,15 @@ class MessageComponent extends Component {
 		socketClient.emit('login', this.state.id);
 
 		socketClient.on('private', (message) => {
-			this.setState((prevState) => ({
-				messageList: [...prevState.messageList, message],
-			}));
-			console.log(this.state.messageList);
+			console.log(message);
+			console.log(this.state.receiver);
+			
+			if(this.state.receiver === message.from){
+				this.setState((prevState) => ({
+					messageList: [...prevState.messageList, message],
+				}));
+				console.log(this.state.messageList);
+			}
 		});
 
 		axios.get('http://localhost:5000/message/' + this.state.mailboxId).then((res) => {

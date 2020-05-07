@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const chai = require('chai');
-const expect = chai.expect;
 require('dotenv').config();
 
 let Appointment = require('../models/appointment.model');
@@ -8,6 +7,8 @@ let User = require('../models/user.model');
 let Mailbox = require('../models/mailbox.model');
 let Rating = require('../models/rating.model');
 let Message = require('../models/message.model');
+
+let assert = chai.assert;
 
 describe('Database Tests', function () {
 	//Before starting the test, create a sandboxed database connection
@@ -39,7 +40,12 @@ describe('Database Tests', function () {
 				startDate: 'Fri Apr 24 2020 16:06:26 GMT+0200 (Central European Summer Time)',
 				endDate: 'Fri Apr 24 2020 20:06:26 GMT+0200 (Central European Summer Time)',
 			});
-			testAppointment.save(done);
+			console.log(testAppointment.isNew);
+			
+			testAppointment.save().then(() => {
+				assert(!testAppointment.isNew);
+				done();
+			})
 		});
 
 		it('Should retrieve appointment from test database', function (done) {
